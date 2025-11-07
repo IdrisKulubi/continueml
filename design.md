@@ -3,9 +3,11 @@
 ## Brand Identity
 
 ### Vision Statement
+
 Continuum is the memory layer for AI creativity. Our design reflects **persistence, intelligence, and creative freedom** - bridging the gap between chaotic AI generation and consistent world-building.
 
 ### Design Principles
+
 1. **Clarity over Complexity** - Information should be immediately scannable
 2. **Trust through Transparency** - Show the AI's work, don't hide it
 3. **Creative but Professional** - Inspire without overwhelming
@@ -18,26 +20,27 @@ Continuum is the memory layer for AI creativity. Our design reflects **persisten
 ### Primary Palette
 
 #### Brand Colors
+
 ```css
 /* Indigo - Primary Brand Color (Intelligence, Trust) */
---indigo-50:  #eef2ff;
+--indigo-50: #eef2ff;
 --indigo-100: #e0e7ff;
 --indigo-200: #c7d2fe;
 --indigo-300: #a5b4fc;
 --indigo-400: #818cf8;
---indigo-500: #6366f1;  /* PRIMARY */
---indigo-600: #4f46e5;  /* MAIN INTERACTIVE */
+--indigo-500: #6366f1; /* PRIMARY */
+--indigo-600: #4f46e5; /* MAIN INTERACTIVE */
 --indigo-700: #4338ca;
 --indigo-800: #3730a3;
 --indigo-900: #312e81;
 
 /* Purple - Secondary Accent (Creativity, Magic) */
---purple-50:  #faf5ff;
+--purple-50: #faf5ff;
 --purple-100: #f3e8ff;
 --purple-200: #e9d5ff;
 --purple-300: #d8b4fe;
 --purple-400: #c084fc;
---purple-500: #a855f7;  /* SECONDARY */
+--purple-500: #a855f7; /* SECONDARY */
 --purple-600: #9333ea;
 --purple-700: #7e22ce;
 --purple-800: #6b21a8;
@@ -48,28 +51,28 @@ Continuum is the memory layer for AI creativity. Our design reflects **persisten
 
 ```css
 /* Success - Green (Consistency, Match, Approval) */
---green-50:  #f0fdf4;
+--green-50: #f0fdf4;
 --green-100: #dcfce7;
---green-500: #22c55e;  /* Success states */
---green-600: #16a34a;  /* Success hover */
+--green-500: #22c55e; /* Success states */
+--green-600: #16a34a; /* Success hover */
 --green-700: #15803d;
 
 /* Warning - Amber (Attention, Partial Match) */
---amber-50:  #fffbeb;
+--amber-50: #fffbeb;
 --amber-100: #fef3c7;
---amber-500: #f59e0b;  /* Warning states */
---amber-600: #d97706;  /* Warning hover */
+--amber-500: #f59e0b; /* Warning states */
+--amber-600: #d97706; /* Warning hover */
 --amber-700: #b45309;
 
 /* Error - Red (Mismatch, Danger) */
---red-50:  #fef2f2;
+--red-50: #fef2f2;
 --red-100: #fee2e2;
---red-500: #ef4444;  /* Error states */
---red-600: #dc2626;  /* Error hover */
+--red-500: #ef4444; /* Error states */
+--red-600: #dc2626; /* Error hover */
 --red-700: #b91c1c;
 
 /* Info - Blue */
---blue-50:  #eff6ff;
+--blue-50: #eff6ff;
 --blue-100: #dbeafe;
 --blue-500: #3b82f6;
 --blue-600: #2563eb;
@@ -80,16 +83,16 @@ Continuum is the memory layer for AI creativity. Our design reflects **persisten
 
 ```css
 /* Gray Scale */
---gray-50:  #f9fafb;  /* App background */
---gray-100: #f3f4f6;  /* Card hover, secondary bg */
---gray-200: #e5e7eb;  /* Borders, dividers */
---gray-300: #d1d5db;  /* Disabled borders */
---gray-400: #9ca3af;  /* Placeholder text */
---gray-500: #6b7280;  /* Secondary text */
---gray-600: #4b5563;  /* Primary text (light bg) */
+--gray-50: #f9fafb; /* App background */
+--gray-100: #f3f4f6; /* Card hover, secondary bg */
+--gray-200: #e5e7eb; /* Borders, dividers */
+--gray-300: #d1d5db; /* Disabled borders */
+--gray-400: #9ca3af; /* Placeholder text */
+--gray-500: #6b7280; /* Secondary text */
+--gray-600: #4b5563; /* Primary text (light bg) */
 --gray-700: #374151;
 --gray-800: #1f2937;
---gray-900: #111827;  /* Primary text, headers */
+--gray-900: #111827; /* Primary text, headers */
 
 /* True Black & White */
 --black: #000000;
@@ -99,6 +102,7 @@ Continuum is the memory layer for AI creativity. Our design reflects **persisten
 ### Color Usage Guidelines
 
 #### Backgrounds
+
 ```css
 /* Page Background */
 background: var(--gray-50);
@@ -108,8 +112,8 @@ background: var(--white);
 border: 1px solid var(--gray-100);
 
 /* Interactive Hover States */
-background: var(--gray-50);  /* Subtle hover */
-background: var(--indigo-50);  /* Branded hover */
+background: var(--gray-50); /* Subtle hover */
+background: var(--indigo-50); /* Branded hover */
 
 /* Glass Effect (for overlays, badges) */
 background: rgba(255, 255, 255, 0.1);
@@ -118,6 +122,7 @@ border: 1px solid rgba(255, 255, 255, 0.2);
 ```
 
 #### Text Hierarchy
+
 ```css
 /* Headings */
 --text-heading: var(--gray-900);
@@ -161,41 +166,48 @@ Entities should have consistent color coding:
 
 ```css
 /* Primary Font Stack */
-font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 
-             'Roboto', 'Helvetica Neue', Arial, sans-serif;
+font-family:
+  "Inter",
+  -apple-system,
+  BlinkMacSystemFont,
+  "Segoe UI",
+  "Roboto",
+  "Helvetica Neue",
+  Arial,
+  sans-serif;
 
 /* Monospace (for code, IDs, technical data) */
-font-family: 'JetBrains Mono', 'Fira Code', 'Courier New', monospace;
+font-family: "JetBrains Mono", "Fira Code", "Courier New", monospace;
 ```
 
 ### Type Scale
 
 ```css
 /* Display */
---text-display: 3.5rem;    /* 56px - Hero text */
+--text-display: 3.5rem; /* 56px - Hero text */
 --text-display-lh: 1.1;
 
 /* Headings */
---text-h1: 2.25rem;        /* 36px */
+--text-h1: 2.25rem; /* 36px */
 --text-h1-lh: 1.2;
 
---text-h2: 1.875rem;       /* 30px */
+--text-h2: 1.875rem; /* 30px */
 --text-h2-lh: 1.3;
 
---text-h3: 1.5rem;         /* 24px */
+--text-h3: 1.5rem; /* 24px */
 --text-h3-lh: 1.4;
 
---text-h4: 1.25rem;        /* 20px */
+--text-h4: 1.25rem; /* 20px */
 --text-h4-lh: 1.5;
 
 /* Body */
---text-base: 1rem;         /* 16px - Default */
+--text-base: 1rem; /* 16px - Default */
 --text-base-lh: 1.6;
 
---text-sm: 0.875rem;       /* 14px - Secondary text */
+--text-sm: 0.875rem; /* 14px - Secondary text */
 --text-sm-lh: 1.5;
 
---text-xs: 0.75rem;        /* 12px - Captions, labels */
+--text-xs: 0.75rem; /* 12px - Captions, labels */
 --text-xs-lh: 1.4;
 ```
 
@@ -203,11 +215,11 @@ font-family: 'JetBrains Mono', 'Fira Code', 'Courier New', monospace;
 
 ```css
 --font-light: 300;
---font-normal: 400;       /* Body text */
---font-medium: 500;       /* Emphasized text, buttons */
---font-semibold: 600;     /* Subheadings */
---font-bold: 700;         /* Headings, important text */
---font-extrabold: 800;    /* Display text */
+--font-normal: 400; /* Body text */
+--font-medium: 500; /* Emphasized text, buttons */
+--font-semibold: 600; /* Subheadings */
+--font-bold: 700; /* Headings, important text */
+--font-extrabold: 800; /* Display text */
 ```
 
 ### Typography Usage Examples
@@ -251,37 +263,37 @@ font-family: 'JetBrains Mono', 'Fira Code', 'Courier New', monospace;
 
 ```css
 --space-0: 0;
---space-1: 0.25rem;   /* 4px */
---space-2: 0.5rem;    /* 8px */
---space-3: 0.75rem;   /* 12px */
---space-4: 1rem;      /* 16px - Base */
---space-5: 1.25rem;   /* 20px */
---space-6: 1.5rem;    /* 24px */
---space-8: 2rem;      /* 32px */
---space-10: 2.5rem;   /* 40px */
---space-12: 3rem;     /* 48px */
---space-16: 4rem;     /* 64px */
---space-20: 5rem;     /* 80px */
---space-24: 6rem;     /* 96px */
+--space-1: 0.25rem; /* 4px */
+--space-2: 0.5rem; /* 8px */
+--space-3: 0.75rem; /* 12px */
+--space-4: 1rem; /* 16px - Base */
+--space-5: 1.25rem; /* 20px */
+--space-6: 1.5rem; /* 24px */
+--space-8: 2rem; /* 32px */
+--space-10: 2.5rem; /* 40px */
+--space-12: 3rem; /* 48px */
+--space-16: 4rem; /* 64px */
+--space-20: 5rem; /* 80px */
+--space-24: 6rem; /* 96px */
 ```
 
 ### Component Spacing Guidelines
 
 ```css
 /* Card Padding */
-padding: var(--space-6);  /* 24px */
+padding: var(--space-6); /* 24px */
 
 /* Button Padding */
-padding: var(--space-3) var(--space-4);  /* 12px 16px */
+padding: var(--space-3) var(--space-4); /* 12px 16px */
 
 /* Section Margins */
-margin-bottom: var(--space-8);  /* 32px */
+margin-bottom: var(--space-8); /* 32px */
 
 /* Grid Gaps */
-gap: var(--space-6);  /* 24px between cards */
+gap: var(--space-6); /* 24px between cards */
 
 /* Input Padding */
-padding: var(--space-3) var(--space-4);  /* 12px 16px */
+padding: var(--space-3) var(--space-4); /* 12px 16px */
 ```
 
 ---
@@ -290,15 +302,16 @@ padding: var(--space-3) var(--space-4);  /* 12px 16px */
 
 ```css
 --radius-none: 0;
---radius-sm: 0.25rem;    /* 4px - Small elements */
---radius-md: 0.5rem;     /* 8px - Buttons, inputs */
---radius-lg: 0.75rem;    /* 12px - Cards */
---radius-xl: 1rem;       /* 16px - Large cards */
---radius-2xl: 1.5rem;    /* 24px - Hero sections */
---radius-full: 9999px;   /* Fully rounded (pills, avatars) */
+--radius-sm: 0.25rem; /* 4px - Small elements */
+--radius-md: 0.5rem; /* 8px - Buttons, inputs */
+--radius-lg: 0.75rem; /* 12px - Cards */
+--radius-xl: 1rem; /* 16px - Large cards */
+--radius-2xl: 1.5rem; /* 24px - Hero sections */
+--radius-full: 9999px; /* Fully rounded (pills, avatars) */
 ```
 
 ### Usage
+
 - **Buttons**: `--radius-md` (8px)
 - **Input Fields**: `--radius-md` (8px)
 - **Cards**: `--radius-xl` (16px)
@@ -313,21 +326,18 @@ padding: var(--space-3) var(--space-4);  /* 12px 16px */
 ```css
 /* Shadow Scale */
 --shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
---shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 
-             0 1px 2px -1px rgba(0, 0, 0, 0.1);
---shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 
-             0 2px 4px -2px rgba(0, 0, 0, 0.1);
---shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 
-             0 4px 6px -4px rgba(0, 0, 0, 0.1);
---shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 
-             0 8px 10px -6px rgba(0, 0, 0, 0.1);
+--shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1);
+--shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+--shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+--shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
 
 /* Special Shadows */
---shadow-focus: 0 0 0 3px rgba(99, 102, 241, 0.2);  /* Indigo focus ring */
---shadow-hover: 0 20px 40px rgba(0, 0, 0, 0.2);     /* Card hover */
+--shadow-focus: 0 0 0 3px rgba(99, 102, 241, 0.2); /* Indigo focus ring */
+--shadow-hover: 0 20px 40px rgba(0, 0, 0, 0.2); /* Card hover */
 ```
 
 ### Usage
+
 - **Cards (default)**: `--shadow-sm`
 - **Cards (hover)**: `--shadow-hover`
 - **Dropdowns/Modals**: `--shadow-lg`
@@ -341,6 +351,7 @@ padding: var(--space-3) var(--space-4);  /* 12px 16px */
 ### Buttons
 
 #### Primary Button
+
 ```css
 .btn-primary {
   background: var(--indigo-600);
@@ -364,6 +375,7 @@ padding: var(--space-3) var(--space-4);  /* 12px 16px */
 ```
 
 #### Secondary Button
+
 ```css
 .btn-secondary {
   background: var(--white);
@@ -381,6 +393,7 @@ padding: var(--space-3) var(--space-4);  /* 12px 16px */
 ```
 
 #### Ghost Button
+
 ```css
 .btn-ghost {
   background: transparent;
@@ -397,6 +410,7 @@ padding: var(--space-3) var(--space-4);  /* 12px 16px */
 ### Cards
 
 #### Standard Card
+
 ```css
 .card {
   background: var(--white);
@@ -414,6 +428,7 @@ padding: var(--space-3) var(--space-4);  /* 12px 16px */
 ```
 
 #### Entity Card
+
 ```css
 .entity-card {
   background: var(--white);
@@ -454,6 +469,7 @@ padding: var(--space-3) var(--space-4);  /* 12px 16px */
 ### Inputs
 
 #### Text Input
+
 ```css
 .input {
   width: 100%;
@@ -477,6 +493,7 @@ padding: var(--space-3) var(--space-4);  /* 12px 16px */
 ```
 
 #### Select Dropdown
+
 ```css
 .select {
   width: 100%;
@@ -498,6 +515,7 @@ padding: var(--space-3) var(--space-4);  /* 12px 16px */
 ### Badges & Tags
 
 #### Badge
+
 ```css
 .badge {
   display: inline-flex;
@@ -531,6 +549,7 @@ padding: var(--space-3) var(--space-4);  /* 12px 16px */
 ```
 
 #### Tag (for entity attributes)
+
 ```css
 .tag {
   display: inline-block;
@@ -562,7 +581,7 @@ padding: var(--space-3) var(--space-4);  /* 12px 16px */
 }
 
 .consistency-high::before {
-  content: '';
+  content: "";
   width: 8px;
   height: 8px;
   border-radius: 50%;
@@ -576,7 +595,7 @@ padding: var(--space-3) var(--space-4);  /* 12px 16px */
 }
 
 .consistency-medium::before {
-  content: '';
+  content: "";
   width: 8px;
   height: 8px;
   border-radius: 50%;
@@ -590,7 +609,7 @@ padding: var(--space-3) var(--space-4);  /* 12px 16px */
 }
 
 .consistency-low::before {
-  content: '';
+  content: "";
   width: 8px;
   height: 8px;
   border-radius: 50%;
@@ -606,10 +625,10 @@ padding: var(--space-3) var(--space-4);  /* 12px 16px */
 
 ```css
 /* Max widths for content areas */
---container-sm: 640px;   /* Single column content */
---container-md: 768px;   /* Forms, narrow content */
---container-lg: 1024px;  /* Default page width */
---container-xl: 1280px;  /* Dashboard, wide content */
+--container-sm: 640px; /* Single column content */
+--container-md: 768px; /* Forms, narrow content */
+--container-lg: 1024px; /* Default page width */
+--container-xl: 1280px; /* Dashboard, wide content */
 --container-2xl: 1536px; /* Maximum width */
 
 /* Standard Container */
@@ -755,7 +774,8 @@ transition: all 0.2s ease;
 
 /* Pulse (for loading states) */
 @keyframes pulse {
-  0%, 100% {
+  0%,
+  100% {
     opacity: 1;
   }
   50% {
@@ -792,7 +812,9 @@ transition: all 0.2s ease;
 
 /* Checkbox/Toggle */
 .toggle {
-  transition: background-color 0.2s ease, transform 0.2s ease;
+  transition:
+    background-color 0.2s ease,
+    transform 0.2s ease;
 }
 
 .toggle:checked {
@@ -818,10 +840,22 @@ transition: all 0.2s ease;
 
 ```css
 /* Icon Sizes */
-.icon-sm { width: 16px; height: 16px; }
-.icon-md { width: 20px; height: 20px; }
-.icon-lg { width: 24px; height: 24px; }
-.icon-xl { width: 32px; height: 32px; }
+.icon-sm {
+  width: 16px;
+  height: 16px;
+}
+.icon-md {
+  width: 20px;
+  height: 20px;
+}
+.icon-lg {
+  width: 24px;
+  height: 24px;
+}
+.icon-xl {
+  width: 32px;
+  height: 32px;
+}
 
 /* Icon in Button */
 .btn-with-icon {
@@ -864,19 +898,24 @@ transition: all 0.2s ease;
 /* Base: 0-639px (Mobile) */
 
 /* Small (sm): 640px+ (Large mobile/Small tablet) */
-@media (min-width: 640px) { }
+@media (min-width: 640px) {
+}
 
 /* Medium (md): 768px+ (Tablet) */
-@media (min-width: 768px) { }
+@media (min-width: 768px) {
+}
 
 /* Large (lg): 1024px+ (Desktop) */
-@media (min-width: 1024px) { }
+@media (min-width: 1024px) {
+}
 
 /* Extra Large (xl): 1280px+ (Large desktop) */
-@media (min-width: 1280px) { }
+@media (min-width: 1280px) {
+}
 
 /* 2X Large (2xl): 1536px+ (Wide screen) */
-@media (min-width: 1536px) { }
+@media (min-width: 1536px) {
+}
 ```
 
 ### Mobile Adaptations
@@ -887,16 +926,16 @@ transition: all 0.2s ease;
   .entity-grid {
     grid-template-columns: 1fr;
   }
-  
+
   .stats-grid {
     grid-template-columns: repeat(2, 1fr);
   }
-  
+
   /* Hide sidebar, show hamburger menu */
   .sidebar {
     display: none;
   }
-  
+
   /* Reduce padding */
   .container {
     padding: 0 var(--space-4);
@@ -911,14 +950,10 @@ transition: all 0.2s ease;
 ### Loading States
 
 #### Skeleton Loader
+
 ```css
 .skeleton {
-  background: linear-gradient(
-    90deg,
-    var(--gray-200) 25%,
-    var(--gray-100) 50%,
-    var(--gray-200) 75%
-  );
+  background: linear-gradient(90deg, var(--gray-200) 25%, var(--gray-100) 50%, var(--gray-200) 75%);
   background-size: 200% 100%;
   animation: skeleton-loading 1.5s ease-in-out infinite;
   border-radius: var(--radius-md);
@@ -935,6 +970,7 @@ transition: all 0.2s ease;
 ```
 
 #### Spinner
+
 ```css
 .spinner {
   width: 24px;
@@ -1034,6 +1070,7 @@ transition: all 0.2s ease;
 ### Color Contrast
 
 All text must meet WCAG AA standards:
+
 - **Normal text**: 4.5:1 contrast ratio
 - **Large text** (18px+): 3:1 contrast ratio
 - **UI components**: 3:1 contrast ratio
@@ -1064,11 +1101,11 @@ All text must meet WCAG AA standards:
   --bg-primary: #0f172a;
   --bg-secondary: #1e293b;
   --bg-tertiary: #334155;
-  
+
   --text-primary: #f1f5f9;
   --text-secondary: #cbd5e1;
   --text-tertiary: #94a3b8;
-  
+
   --border: #334155;
   --border-hover: #475569;
 }
@@ -1099,12 +1136,14 @@ When designing a new component, ensure:
 ## Design Tools & Resources
 
 ### Figma Setup
+
 1. Install Inter font
 2. Import color variables from this doc
 3. Create component library with buttons, cards, inputs
 4. Set up 4px grid
 
 ### Development Setup
+
 ```bash
 # Tailwind CSS already includes these patterns
 # Custom CSS variables in globals.css
@@ -1121,12 +1160,14 @@ When designing a new component, ensure:
 ## Brand Assets
 
 ### Logo Usage
+
 - **Primary Logo**: "Continuum" in gradient text (indigo to purple)
 - **Logo Mark**: Abstract memory wave symbol (TBD)
 - **Minimum Size**: 120px width for logo
 - **Clear Space**: Equal to height of "C" in logo
 
 ### Brand Voice
+
 - **Tone**: Intelligent, confident, empowering
 - **Language**: Clear, concise, avoids jargon
 - **Personality**: Professional but creative, trustworthy but innovative

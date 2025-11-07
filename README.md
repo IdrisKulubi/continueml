@@ -1,24 +1,71 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Continuum MVP
+
+An AI memory system that enables creators to build consistent worlds across multiple AI-generated content pieces.
+
+## Tech Stack
+
+- **Framework**: Next.js 14 (App Router)
+- **Language**: TypeScript 5
+- **Styling**: Tailwind CSS 3
+- **UI Components**: shadcn/ui
+- **Database**: PostgreSQL (Neon DB) with Drizzle ORM
+- **Authentication**: Better Auth
+- **Vector Storage**: Pinecone
+- **Object Storage**: Cloudflare R2
+- **AI APIs**: OpenAI, Replicate (CLIP)
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
+
+- Node.js 18+ and pnpm
+- PostgreSQL database (Neon DB recommended)
+- API keys for OpenAI, Pinecone, Replicate, and Cloudflare R2
+
+### Installation
+
+1. Clone the repository
+2. Install dependencies:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
+pnpm install
+```
+
+3. Copy `.env.example` to `.env.local` and fill in your environment variables:
+
+```bash
+cp .env.example .env.local
+```
+
+4. Run the development server:
+
+```bash
 pnpm dev
-# or
-bun dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Available Scripts
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- `pnpm dev` - Start development server
+- `pnpm build` - Build for production
+- `pnpm start` - Start production server
+- `pnpm lint` - Run ESLint
+- `pnpm format` - Format code with Prettier
+- `pnpm format:check` - Check code formatting
+
+## Project Structure
+
+```
+src/
+├── app/              # Next.js App Router pages
+├── components/       # React components
+│   ├── ui/          # shadcn/ui components
+│   └── themes/      # Theme components
+├── lib/             # Utility functions and services
+├── hooks/           # Custom React hooks
+└── types/           # TypeScript type definitions
+```
 
 ## Learn More
 
