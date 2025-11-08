@@ -2,6 +2,6 @@
   "name": "continueml-worker",
   "compatibility_date": "2025-11-08",
   "assets": {
-    "directory": "./dist"
+    "directory": "./out"
   }
 }
