@@ -1,8 +1,20 @@
 import { MainLayout } from "@/components/layout/main-layout";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { getSession } from "@/lib/auth/session";
+import { redirect } from "next/navigation";
 
-export default function Home() {
+// Force dynamic rendering since we check session
+export const dynamic = "force-dynamic";
+
+export default async function Home() {
+  const session = await getSession();
+  
+  // Redirect authenticated users to worlds page
+  if (session) {
+    redirect("/worlds");
+  }
+
   return (
     <MainLayout>
       <div className="flex min-h-[calc(100vh-4rem)] items-center justify-center">
@@ -16,10 +28,10 @@ export default function Home() {
           </p>
           <div className="flex gap-4 justify-center">
             <Button asChild size="lg">
-              <Link href="/worlds">Get Started</Link>
+              <Link href="/login">Get Started</Link>
             </Button>
             <Button asChild variant="outline" size="lg">
-              <Link href="/settings">Learn More</Link>
+              <Link href="/login">Sign In</Link>
             </Button>
           </div>
         </div>

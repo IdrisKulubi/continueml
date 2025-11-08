@@ -1,8 +1,8 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  // Generate a static export so Cloudflare Workers can serve the prebuilt assets.
-  output: "export",
+  // Dynamic app with authentication and database - cannot use static export
+  // Will deploy to Vercel or similar platform that supports SSR
 };
 
 export default nextConfig;
