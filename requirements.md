@@ -1,8 +1,8 @@
-# REQUIREMENTS.md - Continuum
+# REQUIREMENTS.md - continueml
 
 ## Project Overview
 
-**Continuum** is an AI memory system that enables creators to build consistent worlds across multiple AI-generated content pieces. It acts as a persistent memory layer that sits above generation tools, ensuring characters, locations, styles, and aesthetic choices remain consistent throughout a creative project.
+**continueml** is an AI memory system that enables creators to build consistent worlds across multiple AI-generated content pieces. It acts as a persistent memory layer that sits above generation tools, ensuring characters, locations, styles, and aesthetic choices remain consistent throughout a creative project.
 
 **Tagline**: "Build worlds, not just one-offs."
 
@@ -17,7 +17,7 @@ AI generation tools (Runway, Midjourney, Stable Diffusion) are stateless and amn
 - Brand-consistent content
 - Long-form storytelling
 
-**Solution**: Continuum provides semantic memory using vector embeddings, enabling creators to generate content that automatically adheres to their established world rules.
+**Solution**: continueml provides semantic memory using vector embeddings, enabling creators to generate content that automatically adheres to their established world rules.
 
 ---
 
@@ -490,31 +490,31 @@ generation:failed
 
 ### Must Have
 
-- ✅ World creation and management
-- ✅ Entity creation with images + descriptions
-- ✅ Embedding generation and storage
-- ✅ Basic generation with prompt enhancement
-- ✅ Consistency checker (basic)
-- ✅ Simple branching
-- ✅ World Bible PDF export
-- ✅ User authentication
-- ✅ Dashboard UI
+- âœ… World creation and management
+- âœ… Entity creation with images + descriptions
+- âœ… Embedding generation and storage
+- âœ… Basic generation with prompt enhancement
+- âœ… Consistency checker (basic)
+- âœ… Simple branching
+- âœ… World Bible PDF export
+- âœ… User authentication
+- âœ… Dashboard UI
 
 ### Nice to Have
 
-- ⭕ Relationship visualization
-- ⭕ Advanced search filters
-- ⭕ Generation history filtering
-- ⭕ Mobile optimization
-- ⭕ Onboarding flow
+- â­• Relationship visualization
+- â­• Advanced search filters
+- â­• Generation history filtering
+- â­• Mobile optimization
+- â­• Onboarding flow
 
 ### Out of Scope (Phase 2)
 
-- ❌ Physics-aware validation
-- ❌ Team collaboration
-- ❌ API for third-party integrations
-- ❌ Fine-tuning custom models
-- ❌ Advanced analytics dashboard
+- âŒ Physics-aware validation
+- âŒ Team collaboration
+- âŒ API for third-party integrations
+- âŒ Fine-tuning custom models
+- âŒ Advanced analytics dashboard
 
 ---
 
@@ -554,11 +554,11 @@ generation:failed
 
 ### Hackathon Success
 
-- ✅ Working MVP deployed
-- ✅ Demo video showcasing core features
-- ✅ At least 10 beta testers during hackathon
-- ✅ Positive judge feedback
-- ✅ Top 3 finish in Tech Track
+- âœ… Working MVP deployed
+- âœ… Demo video showcasing core features
+- âœ… At least 10 beta testers during hackathon
+- âœ… Positive judge feedback
+- âœ… Top 3 finish in Tech Track
 
 ### Post-Hackathon (3 Months)
 

@@ -3,7 +3,7 @@ import { getSessionCookie } from "better-auth/cookies";
 
 export async function proxy(request: NextRequest) {
   const sessionCookie = getSessionCookie(request, {
-    cookiePrefix: "continuum",
+    cookiePrefix: "continueml",
   });
 
   // Optimistic redirect - not secure, must validate session on each page/route

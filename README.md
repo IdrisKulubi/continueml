@@ -1,4 +1,4 @@
-# Continuum MVP
+# continueml MVP
 
 An AI memory system that enables creators to build consistent worlds across multiple AI-generated content pieces.
 
@@ -58,13 +58,13 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
 ```
 src/
-├── app/              # Next.js App Router pages
-├── components/       # React components
-│   ├── ui/          # shadcn/ui components
-│   └── themes/      # Theme components
-├── lib/             # Utility functions and services
-├── hooks/           # Custom React hooks
-└── types/           # TypeScript type definitions
+â”œâ”€â”€ app/              # Next.js App Router pages
+â”œâ”€â”€ components/       # React components
+â”‚   â”œâ”€â”€ ui/          # shadcn/ui components
+â”‚   â””â”€â”€ themes/      # Theme components
+â”œâ”€â”€ lib/             # Utility functions and services
+â”œâ”€â”€ hooks/           # Custom React hooks
+â””â”€â”€ types/           # TypeScript type definitions
 ```
 
 ## Learn More

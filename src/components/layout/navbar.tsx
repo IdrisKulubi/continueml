@@ -37,7 +37,7 @@ export function Navbar() {
             <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
               <span className="text-lg font-bold">C</span>
             </div>
-            <span className="text-xl font-semibold">Continuum</span>
+            <span className="text-xl font-semibold">continueml</span>
           </Link>
 
           {/* Desktop Navigation */}

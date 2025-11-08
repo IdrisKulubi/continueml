@@ -1,10 +1,10 @@
-# DESIGN.md - Continuum Design System
+# DESIGN.md - continueml Design System
 
 ## Brand Identity
 
 ### Vision Statement
 
-Continuum is the memory layer for AI creativity. Our design reflects **persistence, intelligence, and creative freedom** - bridging the gap between chaotic AI generation and consistent world-building.
+continueml is the memory layer for AI creativity. Our design reflects **persistence, intelligence, and creative freedom** - bridging the gap between chaotic AI generation and consistent world-building.
 
 ### Design Principles
 
@@ -1161,7 +1161,7 @@ When designing a new component, ensure:
 
 ### Logo Usage
 
-- **Primary Logo**: "Continuum" in gradient text (indigo to purple)
+- **Primary Logo**: "continueml" in gradient text (indigo to purple)
 - **Logo Mark**: Abstract memory wave symbol (TBD)
 - **Minimum Size**: 120px width for logo
 - **Clear Space**: Equal to height of "C" in logo

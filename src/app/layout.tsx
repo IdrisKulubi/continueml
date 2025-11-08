@@ -10,7 +10,7 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Continuum - AI Memory for Creative Projects",
+  title: "continueml - AI Memory for Creative Projects",
   description: "Build consistent worlds across multiple AI-generated content pieces",
 };
 

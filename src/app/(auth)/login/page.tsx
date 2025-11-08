@@ -32,7 +32,7 @@ export default function LoginPage() {
     <div className="flex min-h-screen items-center justify-center bg-linear-to-br from-slate-50 to-slate-100 dark:from-slate-950 dark:to-slate-900 p-4">
       <Card className="w-full max-w-md">
         <CardHeader className="space-y-1 text-center">
-          <CardTitle className="text-3xl font-bold">Welcome to Continuum</CardTitle>
+          <CardTitle className="text-3xl font-bold">Welcome to continueml</CardTitle>
           <CardDescription>
             Sign in to manage your creative worlds and entities
           </CardDescription>
