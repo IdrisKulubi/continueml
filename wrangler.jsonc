@@ -1,5 +1,5 @@
 {
-  "name": "continueml-worker",
+  "name": "continueml",
   "compatibility_date": "2025-11-08",
   "assets": {
     "directory": "./out"
