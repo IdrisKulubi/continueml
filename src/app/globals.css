@@ -6,8 +6,7 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-inter);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -76,6 +75,18 @@
   --sidebar-accent-foreground: oklch(0.205 0 0);
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
+
+  /* Entity Type Colors */
+  --entity-character: oklch(0.646 0.222 41.116);
+  --entity-character-foreground: oklch(1 0 0);
+  --entity-location: oklch(0.6 0.118 184.704);
+  --entity-location-foreground: oklch(1 0 0);
+  --entity-object: oklch(0.769 0.188 70.08);
+  --entity-object-foreground: oklch(0.145 0 0);
+  --entity-style: oklch(0.488 0.243 264.376);
+  --entity-style-foreground: oklch(1 0 0);
+  --entity-custom: oklch(0.556 0 0);
+  --entity-custom-foreground: oklch(1 0 0);
 }
 
 .dark {
@@ -110,6 +121,18 @@
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.556 0 0);
+
+  /* Entity Type Colors - Dark Mode */
+  --entity-character: oklch(0.646 0.222 41.116);
+  --entity-character-foreground: oklch(1 0 0);
+  --entity-location: oklch(0.6 0.118 184.704);
+  --entity-location-foreground: oklch(1 0 0);
+  --entity-object: oklch(0.769 0.188 70.08);
+  --entity-object-foreground: oklch(0.145 0 0);
+  --entity-style: oklch(0.488 0.243 264.376);
+  --entity-style-foreground: oklch(1 0 0);
+  --entity-custom: oklch(0.556 0 0);
+  --entity-custom-foreground: oklch(1 0 0);
 }
 
 @layer base {
@@ -118,5 +141,29 @@
   }
   body {
     @apply bg-background text-foreground;
+  }
+}
+
+@layer utilities {
+  /* Entity Type Color Classes */
+  .entity-character {
+    background-color: var(--entity-character);
+    color: var(--entity-character-foreground);
+  }
+  .entity-location {
+    background-color: var(--entity-location);
+    color: var(--entity-location-foreground);
+  }
+  .entity-object {
+    background-color: var(--entity-object);
+    color: var(--entity-object-foreground);
+  }
+  .entity-style {
+    background-color: var(--entity-style);
+    color: var(--entity-style-foreground);
+  }
+  .entity-custom {
+    background-color: var(--entity-custom);
+    color: var(--entity-custom-foreground);
   }
 }
