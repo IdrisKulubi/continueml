@@ -1,28 +1,11 @@
-// Core entity types
-export enum EntityType {
-  CHARACTER = "character",
-  LOCATION = "location",
-  OBJECT = "object",
-  STYLE = "style",
-  CUSTOM = "custom",
-}
+// Core entity types (matching database enum values)
+export type EntityType = "character" | "location" | "object" | "style" | "custom";
 
-// Generation tool types
-export enum GenerationTool {
-  RUNWAY = "runway",
-  MIDJOURNEY = "midjourney",
-  STABLE_DIFFUSION = "stable_diffusion",
-  PIKA = "pika",
-  LUMA = "luma",
-}
+// Generation tool types (matching database enum values)
+export type GenerationTool = "runway" | "midjourney" | "stable_diffusion" | "other";
 
-// Generation status types
-export enum GenerationStatus {
-  QUEUED = "queued",
-  PROCESSING = "processing",
-  COMPLETED = "completed",
-  FAILED = "failed",
-}
+// Generation status types (matching database enum values)
+export type GenerationStatus = "queued" | "processing" | "completed" | "failed";
 
 // User type (extends Better Auth user)
 export interface User {
