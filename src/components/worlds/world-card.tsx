@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { World } from "@/types";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -13,7 +12,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { MoreVertical, Edit, Archive, Trash2, Globe } from "lucide-react";
+import { MoreVertical, Edit, Archive, Trash2, Globe, Clock } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { EditWorldDialog } from "./edit-world-dialog";
 import { DeleteWorldDialog } from "./delete-world-dialog";
@@ -43,77 +42,87 @@ export function WorldCard({ world }: WorldCardProps) {
 
   const handleArchive = async (e: React.MouseEvent) => {
     e.stopPropagation();
-    // Archive functionality will be implemented in edit dialog
     setShowEditDialog(true);
   };
 
   return (
     <>
-      <Card
-        className="cursor-pointer transition-all hover:shadow-lg hover:border-primary/50"
+      <div
+        className="group relative bg-white border border-gray-100 rounded-2xl p-6 cursor-pointer transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_20px_40px_rgba(0,0,0,0.1)] hover:border-indigo-200"
         onClick={handleCardClick}
       >
-        <CardHeader className="pb-3">
-          <div className="flex items-start justify-between">
-            <div className="flex-1 min-w-0">
-              <CardTitle className="text-xl mb-1 truncate">{world.name}</CardTitle>
-              {world.description && (
-                <CardDescription className="line-clamp-2">
-                  {world.description}
-                </CardDescription>
-              )}
-            </div>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>
-                <Button variant="ghost" size="icon" className="h-8 w-8 ml-2">
-                  <MoreVertical className="h-4 w-4" />
-                  <span className="sr-only">Open menu</span>
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuItem onClick={handleEdit}>
-                  <Edit className="mr-2 h-4 w-4" />
-                  Edit
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={handleArchive}>
-                  <Archive className="mr-2 h-4 w-4" />
-                  Archive
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={handleDelete} className="text-destructive">
-                  <Trash2 className="mr-2 h-4 w-4" />
-                  Delete
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+        {/* Header */}
+        <div className="flex items-start justify-between mb-4">
+          <div className="flex-1 min-w-0">
+            <h3 className="text-xl font-semibold text-gray-900 mb-2 truncate group-hover:text-indigo-600 transition-colors">
+              {world.name}
+            </h3>
+            {world.description && (
+              <p className="text-sm text-gray-500 line-clamp-2 leading-relaxed">
+                {world.description}
+              </p>
+            )}
           </div>
-        </CardHeader>
-        <CardContent>
-          {world.tags && world.tags.length > 0 && (
-            <div className="flex flex-wrap gap-1 mb-3">
-              {world.tags.slice(0, 3).map((tag) => (
-                <Badge key={tag} variant="secondary" className="text-xs">
-                  {tag}
-                </Badge>
-              ))}
-              {world.tags.length > 3 && (
-                <Badge variant="secondary" className="text-xs">
-                  +{world.tags.length - 3}
-                </Badge>
-              )}
-            </div>
-          )}
-          <div className="flex items-center gap-4 text-sm text-muted-foreground">
-            <div className="flex items-center gap-1">
-              <Globe className="h-3.5 w-3.5" />
-              <span>0 entities</span>
-            </div>
-            <div>
-              Updated {formatDistanceToNow(new Date(world.updatedAt), { addSuffix: true })}
-            </div>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>
+              <Button 
+                variant="ghost" 
+                size="icon" 
+                className="h-8 w-8 ml-2 opacity-0 group-hover:opacity-100 transition-opacity hover:bg-gray-100"
+              >
+                <MoreVertical className="h-4 w-4 text-gray-600" />
+                <span className="sr-only">Open menu</span>
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-48 rounded-lg shadow-lg border-gray-200">
+              <DropdownMenuItem onClick={handleEdit} className="cursor-pointer py-2.5">
+                <Edit className="mr-2 h-4 w-4 text-gray-600" />
+                <span className="text-sm font-medium">Edit</span>
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={handleArchive} className="cursor-pointer py-2.5">
+                <Archive className="mr-2 h-4 w-4 text-gray-600" />
+                <span className="text-sm font-medium">Archive</span>
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem onClick={handleDelete} className="cursor-pointer py-2.5 text-red-600 focus:text-red-600 focus:bg-red-50">
+                <Trash2 className="mr-2 h-4 w-4" />
+                <span className="text-sm font-medium">Delete</span>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+
+        {/* Tags */}
+        {world.tags && world.tags.length > 0 && (
+          <div className="flex flex-wrap gap-2 mb-4">
+            {world.tags.slice(0, 3).map((tag) => (
+              <Badge 
+                key={tag} 
+                className="bg-gray-100 text-gray-700 hover:bg-gray-200 text-xs font-medium px-3 py-1 rounded-full border-0"
+              >
+                {tag}
+              </Badge>
+            ))}
+            {world.tags.length > 3 && (
+              <Badge className="bg-gray-100 text-gray-700 text-xs font-medium px-3 py-1 rounded-full border-0">
+                +{world.tags.length - 3}
+              </Badge>
+            )}
           </div>
-        </CardContent>
-      </Card>
+        )}
+
+        {/* Footer */}
+        <div className="flex items-center gap-4 text-sm text-gray-500 pt-4 border-t border-gray-100">
+          <div className="flex items-center gap-1.5">
+            <Globe className="h-4 w-4" strokeWidth={2} />
+            <span className="font-medium">0 entities</span>
+          </div>
+          <div className="flex items-center gap-1.5">
+            <Clock className="h-4 w-4" strokeWidth={2} />
+            <span>{formatDistanceToNow(new Date(world.updatedAt), { addSuffix: true })}</span>
+          </div>
+        </div>
+      </div>
 
       <EditWorldDialog
         world={world}
