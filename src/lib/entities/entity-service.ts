@@ -44,12 +44,12 @@ export class EntityService {
   }
 
   /**
-   * Get entities with filtering (type, tags, search)
+   * Get entities with filtering (type, tags, search) including primary images
    */
   async getEntities(
     worldId: string,
     filters: EntityFilters = {}
-  ): Promise<Entity[]> {
+  ): Promise<(Entity & { primaryImage?: EntityImage })[]> {
     const conditions = [eq(entities.worldId, worldId)];
 
     // Filter by archived status (default: exclude archived)
@@ -98,11 +98,30 @@ export class EntityService {
 
     const results = await query.orderBy(desc(entities.updatedAt));
 
-    return results.map((entity) => ({
-      ...entity,
-      tags: entity.tags || [],
-      metadata: (entity.metadata as Record<string, unknown>) || {},
-    }));
+    // Fetch primary images for all entities
+    const entitiesWithImages = await Promise.all(
+      results.map(async (entity) => {
+        const [primaryImage] = await db
+          .select()
+          .from(entityImages)
+          .where(
+            and(
+              eq(entityImages.entityId, entity.id),
+              eq(entityImages.isPrimary, true)
+            )
+          )
+          .limit(1);
+
+        return {
+          ...entity,
+          tags: entity.tags || [],
+          metadata: (entity.metadata as Record<string, unknown>) || {},
+          primaryImage: primaryImage || undefined,
+        };
+      })
+    );
+
+    return entitiesWithImages;
   }
 
   /**
