@@ -48,17 +48,17 @@ export function WorldCard({ world }: WorldCardProps) {
   return (
     <>
       <div
-        className="group relative bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-2xl p-6 cursor-pointer transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_20px_40px_rgba(0,0,0,0.1)] dark:hover:shadow-[0_20px_40px_rgba(0,0,0,0.3)] hover:border-indigo-200 dark:hover:border-indigo-700"
+        className="group relative bg-white dark:bg-gray-900 border border-indigo-200 dark:border-indigo-800/50 rounded-2xl p-6 cursor-pointer shadow-[0_8px_30px_rgba(0,0,0,0.08)] dark:shadow-[0_8px_30px_rgba(0,0,0,0.3)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_20px_40px_rgba(0,0,0,0.12)] dark:hover:shadow-[0_20px_40px_rgba(0,0,0,0.4)] hover:border-indigo-300 dark:hover:border-indigo-700"
         onClick={handleCardClick}
       >
         {/* Header */}
         <div className="flex items-start justify-between mb-4">
           <div className="flex-1 min-w-0">
-            <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-2 truncate group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
+            <h3 className="text-xl font-semibold text-indigo-600 dark:text-indigo-400 mb-2 truncate group-hover:text-indigo-700 dark:group-hover:text-indigo-300 transition-colors">
               {world.name}
             </h3>
             {world.description && (
-              <p className="text-sm text-gray-500 dark:text-gray-400 line-clamp-2 leading-relaxed">
+              <p className="text-sm text-gray-600 dark:text-gray-400 line-clamp-2 leading-relaxed">
                 {world.description}
               </p>
             )}
@@ -68,7 +68,7 @@ export function WorldCard({ world }: WorldCardProps) {
               <Button 
                 variant="ghost" 
                 size="icon" 
-                className="h-8 w-8 ml-2 opacity-0 group-hover:opacity-100 transition-opacity hover:bg-gray-100 dark:hover:bg-gray-800"
+                className="h-8 w-8 ml-2 opacity-100 transition-opacity hover:bg-indigo-50 dark:hover:bg-indigo-950/30"
               >
                 <MoreVertical className="h-4 w-4 text-gray-600 dark:text-gray-400" />
                 <span className="sr-only">Open menu</span>
