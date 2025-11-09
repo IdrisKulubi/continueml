@@ -108,7 +108,7 @@ export function EntityCard({ entity, worldId }: EntityCardProps) {
       const result = await duplicateEntityAction(entity.id);
 
       if (result.success) {
-        toast.success("Entity duplicated successfully");
+        toast.success("Entity duplicated successfully (including images)");
         router.refresh();
       } else {
         toast.error(result.error || "Failed to duplicate entity");

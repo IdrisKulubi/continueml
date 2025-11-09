@@ -302,10 +302,24 @@ export async function deleteEntityAction(
     // Delete entity and get images for cleanup
     const images = await entityService.deleteEntity(entityId);
 
-    // Delete images from storage
+    // Delete images from storage only if they're not referenced by other entities
+    // This is important because duplicated entities share the same image URLs
     if (images.length > 0) {
-      const storageKeys = images.map((img) => img.storageKey);
-      await deleteEntityImages(storageKeys);
+      const storageKeysToDelete: string[] = [];
+      
+      for (const image of images) {
+        // Check if this storage key is used by any other entity
+        const otherEntitiesUsingImage = await entityService.getEntitiesByStorageKey(image.storageKey);
+        
+        // Only delete if no other entities are using this image
+        if (otherEntitiesUsingImage.length === 0) {
+          storageKeysToDelete.push(image.storageKey);
+        }
+      }
+
+      if (storageKeysToDelete.length > 0) {
+        await deleteEntityImages(storageKeysToDelete);
+      }
     }
 
     // Revalidate relevant paths
@@ -445,7 +459,7 @@ export async function deleteEntityImageAction(
 }
 
 /**
- * Duplicate an entity
+ * Duplicate an entity (including image references)
  */
 export async function duplicateEntityAction(
   entityId: string
@@ -469,15 +483,12 @@ export async function duplicateEntityAction(
       return { success: false, error: "Unauthorized" };
     }
 
-    // Duplicate entity
+    // Duplicate entity (includes image references)
     const duplicatedEntity = await entityService.duplicateEntity(entityId);
 
     if (!duplicatedEntity) {
       return { success: false, error: "Failed to duplicate entity" };
     }
-
-    // Note: Images are NOT duplicated in MVP to avoid storage costs
-    // This can be added as a future enhancement
 
     // Revalidate relevant paths
     revalidatePath(`/worlds/${result.entity.worldId}/entities`);

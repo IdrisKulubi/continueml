@@ -205,6 +205,7 @@ export class EntityService {
 
   /**
    * Duplicate an entity (creates a copy with " (Copy)" suffix)
+   * Also duplicates image references (reuses same URLs, no re-upload)
    */
   async duplicateEntity(entityId: string): Promise<Entity | null> {
     // Get the original entity
@@ -215,6 +216,13 @@ export class EntityService {
       .limit(1);
 
     if (!originalEntity) return null;
+
+    // Get all images from the original entity
+    const originalImages = await db
+      .select()
+      .from(entityImages)
+      .where(eq(entityImages.entityId, entityId))
+      .orderBy(desc(entityImages.isPrimary), desc(entityImages.uploadedAt));
 
     // Create a new entity with copied attributes
     const [duplicatedEntity] = await db
@@ -231,6 +239,22 @@ export class EntityService {
         isArchived: false,
       })
       .returning();
+
+    // Duplicate image references (reuse same URLs and storage keys)
+    if (originalImages.length > 0) {
+      await db.insert(entityImages).values(
+        originalImages.map((img) => ({
+          entityId: duplicatedEntity.id,
+          url: img.url,
+          storageKey: img.storageKey,
+          width: img.width,
+          height: img.height,
+          fileSize: img.fileSize,
+          mimeType: img.mimeType,
+          isPrimary: img.isPrimary,
+        }))
+      );
+    }
 
     return {
       ...duplicatedEntity,
@@ -364,6 +388,18 @@ export class EntityService {
       tags: entity.tags || [],
       metadata: (entity.metadata as Record<string, unknown>) || {},
     }));
+  }
+
+  /**
+   * Check if a storage key is used by any entities (for safe deletion)
+   */
+  async getEntitiesByStorageKey(storageKey: string): Promise<string[]> {
+    const results = await db
+      .select({ entityId: entityImages.entityId })
+      .from(entityImages)
+      .where(eq(entityImages.storageKey, storageKey));
+
+    return results.map((r) => r.entityId);
   }
 }
 

@@ -33,7 +33,7 @@ export function EntityActions({ entity, worldId }: EntityActionsProps) {
       const result = await duplicateEntityAction(entity.id);
 
       if (result.success) {
-        toast.success("Entity duplicated successfully");
+        toast.success("Entity duplicated successfully (including images)");
         router.push(`/worlds/${worldId}/entities/${result.data.id}`);
       } else {
         toast.error(result.error || "Failed to duplicate entity");
