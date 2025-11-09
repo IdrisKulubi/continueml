@@ -48,17 +48,17 @@ export function WorldCard({ world }: WorldCardProps) {
   return (
     <>
       <div
-        className="group relative bg-white border border-gray-100 rounded-2xl p-6 cursor-pointer transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_20px_40px_rgba(0,0,0,0.1)] hover:border-indigo-200"
+        className="group relative bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-2xl p-6 cursor-pointer transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_20px_40px_rgba(0,0,0,0.1)] dark:hover:shadow-[0_20px_40px_rgba(0,0,0,0.3)] hover:border-indigo-200 dark:hover:border-indigo-700"
         onClick={handleCardClick}
       >
         {/* Header */}
         <div className="flex items-start justify-between mb-4">
           <div className="flex-1 min-w-0">
-            <h3 className="text-xl font-semibold text-gray-900 mb-2 truncate group-hover:text-indigo-600 transition-colors">
+            <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-2 truncate group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
               {world.name}
             </h3>
             {world.description && (
-              <p className="text-sm text-gray-500 line-clamp-2 leading-relaxed">
+              <p className="text-sm text-gray-500 dark:text-gray-400 line-clamp-2 leading-relaxed">
                 {world.description}
               </p>
             )}
@@ -68,23 +68,23 @@ export function WorldCard({ world }: WorldCardProps) {
               <Button 
                 variant="ghost" 
                 size="icon" 
-                className="h-8 w-8 ml-2 opacity-0 group-hover:opacity-100 transition-opacity hover:bg-gray-100"
+                className="h-8 w-8 ml-2 opacity-0 group-hover:opacity-100 transition-opacity hover:bg-gray-100 dark:hover:bg-gray-800"
               >
-                <MoreVertical className="h-4 w-4 text-gray-600" />
+                <MoreVertical className="h-4 w-4 text-gray-600 dark:text-gray-400" />
                 <span className="sr-only">Open menu</span>
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-48 rounded-lg shadow-lg border-gray-200">
+            <DropdownMenuContent align="end" className="w-48 rounded-lg shadow-lg border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900">
               <DropdownMenuItem onClick={handleEdit} className="cursor-pointer py-2.5">
-                <Edit className="mr-2 h-4 w-4 text-gray-600" />
+                <Edit className="mr-2 h-4 w-4 text-gray-600 dark:text-gray-400" />
                 <span className="text-sm font-medium">Edit</span>
               </DropdownMenuItem>
               <DropdownMenuItem onClick={handleArchive} className="cursor-pointer py-2.5">
-                <Archive className="mr-2 h-4 w-4 text-gray-600" />
+                <Archive className="mr-2 h-4 w-4 text-gray-600 dark:text-gray-400" />
                 <span className="text-sm font-medium">Archive</span>
               </DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={handleDelete} className="cursor-pointer py-2.5 text-red-600 focus:text-red-600 focus:bg-red-50">
+              <DropdownMenuItem onClick={handleDelete} className="cursor-pointer py-2.5 text-red-600 dark:text-red-400 focus:text-red-600 dark:focus:text-red-400 focus:bg-red-50 dark:focus:bg-red-950/30">
                 <Trash2 className="mr-2 h-4 w-4" />
                 <span className="text-sm font-medium">Delete</span>
               </DropdownMenuItem>
@@ -98,13 +98,13 @@ export function WorldCard({ world }: WorldCardProps) {
             {world.tags.slice(0, 3).map((tag) => (
               <Badge 
                 key={tag} 
-                className="bg-gray-100 text-gray-700 hover:bg-gray-200 text-xs font-medium px-3 py-1 rounded-full border-0"
+                className="bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 text-xs font-medium px-3 py-1 rounded-full border-0"
               >
                 {tag}
               </Badge>
             ))}
             {world.tags.length > 3 && (
-              <Badge className="bg-gray-100 text-gray-700 text-xs font-medium px-3 py-1 rounded-full border-0">
+              <Badge className="bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 text-xs font-medium px-3 py-1 rounded-full border-0">
                 +{world.tags.length - 3}
               </Badge>
             )}
@@ -112,7 +112,7 @@ export function WorldCard({ world }: WorldCardProps) {
         )}
 
         {/* Footer */}
-        <div className="flex items-center gap-4 text-sm text-gray-500 pt-4 border-t border-gray-100">
+        <div className="flex items-center gap-4 text-sm text-gray-500 dark:text-gray-400 pt-4 border-t border-gray-100 dark:border-gray-800">
           <div className="flex items-center gap-1.5">
             <Globe className="h-4 w-4" strokeWidth={2} />
             <span className="font-medium">0 entities</span>
