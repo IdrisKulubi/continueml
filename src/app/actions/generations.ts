@@ -57,7 +57,7 @@ const updateGenerationStatusSchema = z.object({
 
 type ActionResponse<T> =
   | { success: true; data: T }
-  | { success: false; error: string };
+  | { success: false; error: { message: string } };
 
 // ============================================================================
 // Server Actions
@@ -66,10 +66,14 @@ type ActionResponse<T> =
 /**
  * Create a new generation with prompt enhancement
  */
-export async function createGenerationAction(
-  worldId: string,
-  formData: FormData
-): Promise<
+export async function createGenerationAction(input: {
+  worldId: string;
+  userId: string;
+  originalPrompt: string;
+  entityIds?: string[];
+  tool: string;
+  branchId?: string;
+}): Promise<
   ActionResponse<{
     generation: Generation;
     originalPrompt: string;
@@ -80,40 +84,38 @@ export async function createGenerationAction(
     // Get current user
     const userId = await getCurrentUserId();
     if (!userId) {
-      return { success: false, error: "Unauthorized" };
+      return { success: false, error: { message: "Unauthorized" } };
+    }
+
+    // Verify user matches
+    if (userId !== input.userId) {
+      return { success: false, error: { message: "Unauthorized" } };
     }
 
     // Verify world ownership
-    const world = await worldService.getWorldById(worldId, userId);
+    const world = await worldService.getWorldById(input.worldId, userId);
     if (!world) {
-      return { success: false, error: "World not found" };
+      return { success: false, error: { message: "World not found" } };
     }
 
-    // Parse and validate form data
-    const rawData = {
-      prompt: formData.get("prompt"),
-      entityIds: formData.get("entityIds")
-        ? String(formData.get("entityIds"))
-            .split(",")
-            .map((id) => id.trim())
-            .filter(Boolean)
-        : undefined,
-      tool: formData.get("tool"),
-      branchId: formData.get("branchId") || undefined,
-    };
-
-    const validatedData = createGenerationSchema.parse(rawData);
+    // Validate input
+    const validatedData = createGenerationSchema.parse({
+      prompt: input.originalPrompt,
+      entityIds: input.entityIds,
+      tool: input.tool,
+      branchId: input.branchId,
+    });
 
     // Enhance prompt with entity attributes
     const enhancementResult = await generationService.enhancePrompt(
       validatedData.prompt,
-      worldId,
+      input.worldId,
       validatedData.entityIds
     );
 
     // Create generation
     const generation = await generationService.createGeneration({
-      worldId,
+      worldId: input.worldId,
       branchId: validatedData.branchId,
       userId,
       originalPrompt: enhancementResult.originalPrompt,
@@ -123,9 +125,9 @@ export async function createGenerationAction(
     });
 
     // Revalidate relevant paths
-    revalidatePath(`/worlds/${worldId}/history`);
-    revalidatePath(`/worlds/${worldId}/generate`);
-    revalidatePath(`/worlds/${worldId}`);
+    revalidatePath(`/worlds/${input.worldId}/history`);
+    revalidatePath(`/worlds/${input.worldId}/generate`);
+    revalidatePath(`/worlds/${input.worldId}`);
 
     return {
       success: true,
@@ -137,10 +139,10 @@ export async function createGenerationAction(
     };
   } catch (error) {
     if (error instanceof z.ZodError) {
-      return { success: false, error: error.issues[0].message };
+      return { success: false, error: { message: error.issues[0].message } };
     }
     console.error("Error creating generation:", error);
-    return { success: false, error: "Failed to create generation" };
+    return { success: false, error: { message: "Failed to create generation" } };
   }
 }
 
@@ -154,7 +156,7 @@ export async function getGenerationsAction(
     // Get current user
     const userId = await getCurrentUserId();
     if (!userId) {
-      return { success: false, error: "Unauthorized" };
+      return { success: false, error: { message: "Unauthorized" } };
     }
 
     // Validate filters if provided
@@ -175,7 +177,7 @@ export async function getGenerationsAction(
         userId
       );
       if (!world) {
-        return { success: false, error: "World not found" };
+        return { success: false, error: { message: "World not found" } };
       }
     }
 
@@ -185,10 +187,10 @@ export async function getGenerationsAction(
     return { success: true, data: generations };
   } catch (error) {
     if (error instanceof z.ZodError) {
-      return { success: false, error: error.issues[0].message };
+      return { success: false, error: { message: error.issues[0].message } };
     }
     console.error("Error fetching generations:", error);
-    return { success: false, error: "Failed to fetch generations" };
+    return { success: false, error: { message: "Failed to fetch generations" } };
   }
 }
 
@@ -202,24 +204,24 @@ export async function getGenerationByIdAction(
     // Get current user
     const userId = await getCurrentUserId();
     if (!userId) {
-      return { success: false, error: "Unauthorized" };
+      return { success: false, error: { message: "Unauthorized" } };
     }
 
     // Get generation
     const generation = await generationService.getGenerationById(generationId);
     if (!generation) {
-      return { success: false, error: "Generation not found" };
+      return { success: false, error: { message: "Generation not found" } };
     }
 
     // Verify ownership
     if (generation.userId !== userId) {
-      return { success: false, error: "Unauthorized" };
+      return { success: false, error: { message: "Unauthorized" } };
     }
 
     return { success: true, data: generation };
   } catch (error) {
     console.error("Error fetching generation:", error);
-    return { success: false, error: "Failed to fetch generation" };
+    return { success: false, error: { message: "Failed to fetch generation" } };
   }
 }
 
@@ -234,18 +236,18 @@ export async function updateGenerationStatusAction(
     // Get current user
     const userId = await getCurrentUserId();
     if (!userId) {
-      return { success: false, error: "Unauthorized" };
+      return { success: false, error: { message: "Unauthorized" } };
     }
 
     // Get generation to verify ownership
     const generation = await generationService.getGenerationById(generationId);
     if (!generation) {
-      return { success: false, error: "Generation not found" };
+      return { success: false, error: { message: "Generation not found" } };
     }
 
     // Verify ownership
     if (generation.userId !== userId) {
-      return { success: false, error: "Unauthorized" };
+      return { success: false, error: { message: "Unauthorized" } };
     }
 
     // Parse and validate form data
@@ -266,7 +268,7 @@ export async function updateGenerationStatusAction(
     );
 
     if (!updatedGeneration) {
-      return { success: false, error: "Generation not found" };
+      return { success: false, error: { message: "Generation not found" } };
     }
 
     // Revalidate relevant paths
@@ -276,10 +278,10 @@ export async function updateGenerationStatusAction(
     return { success: true, data: updatedGeneration };
   } catch (error) {
     if (error instanceof z.ZodError) {
-      return { success: false, error: error.issues[0].message };
+      return { success: false, error: { message: error.issues[0].message } };
     }
     console.error("Error updating generation status:", error);
-    return { success: false, error: "Failed to update generation status" };
+    return { success: false, error: { message: "Failed to update generation status" } };
   }
 }
 
@@ -293,25 +295,25 @@ export async function retryGenerationAction(
     // Get current user
     const userId = await getCurrentUserId();
     if (!userId) {
-      return { success: false, error: "Unauthorized" };
+      return { success: false, error: { message: "Unauthorized" } };
     }
 
     // Get generation to verify ownership
     const generation = await generationService.getGenerationById(generationId);
     if (!generation) {
-      return { success: false, error: "Generation not found" };
+      return { success: false, error: { message: "Generation not found" } };
     }
 
     // Verify ownership
     if (generation.userId !== userId) {
-      return { success: false, error: "Unauthorized" };
+      return { success: false, error: { message: "Unauthorized" } };
     }
 
     // Retry generation
     const newGeneration = await generationService.retryGeneration(generationId);
 
     if (!newGeneration) {
-      return { success: false, error: "Failed to retry generation" };
+      return { success: false, error: { message: "Failed to retry generation" } };
     }
 
     // Revalidate relevant paths
@@ -321,7 +323,7 @@ export async function retryGenerationAction(
     return { success: true, data: newGeneration };
   } catch (error) {
     console.error("Error retrying generation:", error);
-    return { success: false, error: "Failed to retry generation" };
+    return { success: false, error: { message: "Failed to retry generation" } };
   }
 }
 
@@ -335,18 +337,18 @@ export async function deleteGenerationAction(
     // Get current user
     const userId = await getCurrentUserId();
     if (!userId) {
-      return { success: false, error: "Unauthorized" };
+      return { success: false, error: { message: "Unauthorized" } };
     }
 
     // Get generation to verify ownership
     const generation = await generationService.getGenerationById(generationId);
     if (!generation) {
-      return { success: false, error: "Generation not found" };
+      return { success: false, error: { message: "Generation not found" } };
     }
 
     // Verify ownership
     if (generation.userId !== userId) {
-      return { success: false, error: "Unauthorized" };
+      return { success: false, error: { message: "Unauthorized" } };
     }
 
     // Delete generation
@@ -362,7 +364,7 @@ export async function deleteGenerationAction(
     };
   } catch (error) {
     console.error("Error deleting generation:", error);
-    return { success: false, error: "Failed to delete generation" };
+    return { success: false, error: { message: "Failed to delete generation" } };
   }
 }
 
@@ -384,18 +386,18 @@ export async function enhancePromptAction(
     // Get current user
     const userId = await getCurrentUserId();
     if (!userId) {
-      return { success: false, error: "Unauthorized" };
+      return { success: false, error: { message: "Unauthorized" } };
     }
 
     // Verify world ownership
     const world = await worldService.getWorldById(worldId, userId);
     if (!world) {
-      return { success: false, error: "World not found" };
+      return { success: false, error: { message: "World not found" } };
     }
 
     // Validate prompt
     if (!prompt || prompt.trim().length === 0) {
-      return { success: false, error: "Prompt is required" };
+      return { success: false, error: { message: "Prompt is required" } };
     }
 
     // Enhance prompt
@@ -408,7 +410,7 @@ export async function enhancePromptAction(
     return { success: true, data: result };
   } catch (error) {
     console.error("Error enhancing prompt:", error);
-    return { success: false, error: "Failed to enhance prompt" };
+    return { success: false, error: { message: "Failed to enhance prompt" } };
   }
 }
 
@@ -423,7 +425,7 @@ export async function getGenerationsByEntityAction(
     // Get current user
     const userId = await getCurrentUserId();
     if (!userId) {
-      return { success: false, error: "Unauthorized" };
+      return { success: false, error: { message: "Unauthorized" } };
     }
 
     // Get generations
@@ -438,7 +440,7 @@ export async function getGenerationsByEntityAction(
     return { success: true, data: userGenerations };
   } catch (error) {
     console.error("Error fetching generations by entity:", error);
-    return { success: false, error: "Failed to fetch generations" };
+    return { success: false, error: { message: "Failed to fetch generations" } };
   }
 }
 
@@ -459,13 +461,13 @@ export async function getWorldGenerationStatsAction(
     // Get current user
     const userId = await getCurrentUserId();
     if (!userId) {
-      return { success: false, error: "Unauthorized" };
+      return { success: false, error: { message: "Unauthorized" } };
     }
 
     // Verify world ownership
     const world = await worldService.getWorldById(worldId, userId);
     if (!world) {
-      return { success: false, error: "World not found" };
+      return { success: false, error: { message: "World not found" } };
     }
 
     // Get statistics
@@ -474,6 +476,6 @@ export async function getWorldGenerationStatsAction(
     return { success: true, data: stats };
   } catch (error) {
     console.error("Error fetching generation stats:", error);
-    return { success: false, error: "Failed to fetch generation statistics" };
+    return { success: false, error: { message: "Failed to fetch generation statistics" } };
   }
 }

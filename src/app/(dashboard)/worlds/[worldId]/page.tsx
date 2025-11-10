@@ -77,7 +77,7 @@ export default async function WorldDetailPage({ params }: PageProps) {
       </div>
 
       {/* Quick Actions */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <Link
           href={`/worlds/${worldId}/entities`}
           className="group bg-white dark:bg-gray-900 border border-indigo-200 dark:border-indigo-800/50 rounded-2xl p-8 hover:shadow-lg transition-all duration-300 hover:-translate-y-1"
@@ -96,20 +96,41 @@ export default async function WorldDetailPage({ params }: PageProps) {
           </p>
         </Link>
 
-        {/* Placeholder for future features */}
-        <div className="bg-gray-50 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-800 rounded-2xl p-8 opacity-50">
+        <Link
+          href={`/worlds/${worldId}/generate`}
+          className="group bg-white dark:bg-gray-900 border border-purple-200 dark:border-purple-800/50 rounded-2xl p-8 hover:shadow-lg transition-all duration-300 hover:-translate-y-1"
+        >
           <div className="flex items-center justify-between mb-4">
-            <div className="w-12 h-12 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center">
-              <span className="text-2xl">🎬</span>
+            <div className="w-12 h-12 rounded-full bg-purple-50 dark:bg-purple-950/30 flex items-center justify-center">
+              <span className="text-2xl">✨</span>
             </div>
+            <Plus className="w-5 h-5 text-gray-400 group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors" />
           </div>
           <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-2">
-            Generations
+            Generate
           </h3>
           <p className="text-gray-600 dark:text-gray-400">
-            Coming soon
+            Create AI-generated content with prompt enhancement
           </p>
-        </div>
+        </Link>
+
+        <Link
+          href={`/worlds/${worldId}/history`}
+          className="group bg-white dark:bg-gray-900 border border-pink-200 dark:border-pink-800/50 rounded-2xl p-8 hover:shadow-lg transition-all duration-300 hover:-translate-y-1"
+        >
+          <div className="flex items-center justify-between mb-4">
+            <div className="w-12 h-12 rounded-full bg-pink-50 dark:bg-pink-950/30 flex items-center justify-center">
+              <span className="text-2xl">📜</span>
+            </div>
+            <Plus className="w-5 h-5 text-gray-400 group-hover:text-pink-600 dark:group-hover:text-pink-400 transition-colors" />
+          </div>
+          <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-2">
+            History
+          </h3>
+          <p className="text-gray-600 dark:text-gray-400">
+            View and manage your generation history
+          </p>
+        </Link>
 
         <div className="bg-gray-50 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-800 rounded-2xl p-8 opacity-50">
           <div className="flex items-center justify-between mb-4">
