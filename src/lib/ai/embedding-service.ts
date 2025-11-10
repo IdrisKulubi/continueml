@@ -1,4 +1,5 @@
 import OpenAI from "openai";
+import Replicate from "replicate";
 
 /**
  * Retry configuration for API calls
@@ -21,26 +22,39 @@ const DEFAULT_RETRY_CONFIG: RetryConfig = {
 };
 
 /**
- * Embedding Service for OpenAI
- * Handles text embedding generation with retry logic and error handling
+ * Embedding Service for OpenAI and Replicate (CLIP)
+ * Handles text and visual embedding generation with retry logic and error handling
  */
 export class EmbeddingService {
-  private client: OpenAI;
+  private openaiClient: OpenAI;
+  private replicateClient: Replicate;
   private retryConfig: RetryConfig;
 
   constructor(retryConfig: Partial<RetryConfig> = {}) {
     // Validate required environment variables
-    const apiKey = process.env.OPENAI_API_KEY;
+    const openaiApiKey = process.env.OPENAI_API_KEY;
+    const replicateApiToken = process.env.REPLICATE_API_TOKEN;
 
-    if (!apiKey) {
+    if (!openaiApiKey) {
       throw new Error(
         "Missing required OpenAI environment variable. Please check OPENAI_API_KEY."
       );
     }
 
+    if (!replicateApiToken) {
+      throw new Error(
+        "Missing required Replicate environment variable. Please check REPLICATE_API_TOKEN."
+      );
+    }
+
     // Initialize OpenAI client
-    this.client = new OpenAI({
-      apiKey,
+    this.openaiClient = new OpenAI({
+      apiKey: openaiApiKey,
+    });
+
+    // Initialize Replicate client
+    this.replicateClient = new Replicate({
+      auth: replicateApiToken,
     });
 
     // Merge provided config with defaults
@@ -75,22 +89,24 @@ export class EmbeddingService {
    * @param error - Error to check
    * @returns True if the error should trigger a retry
    */
-  private isRetryableError(error: any): boolean {
+  private isRetryableError(error: unknown): boolean {
+    const err = error as { status?: number; code?: string };
+    
     // Retry on rate limit errors
-    if (error?.status === 429) {
+    if (err?.status === 429) {
       return true;
     }
 
     // Retry on server errors (5xx)
-    if (error?.status >= 500 && error?.status < 600) {
+    if (err?.status && err.status >= 500 && err.status < 600) {
       return true;
     }
 
     // Retry on network errors
     if (
-      error?.code === "ECONNRESET" ||
-      error?.code === "ETIMEDOUT" ||
-      error?.code === "ENOTFOUND"
+      err?.code === "ECONNRESET" ||
+      err?.code === "ETIMEDOUT" ||
+      err?.code === "ENOTFOUND"
     ) {
       return true;
     }
@@ -113,8 +129,8 @@ export class EmbeddingService {
     for (let attempt = 0; attempt <= this.retryConfig.maxRetries; attempt++) {
       try {
         return await fn();
-      } catch (error: any) {
-        lastError = error;
+      } catch (error: unknown) {
+        lastError = error as Error;
 
         // Don't retry if this is the last attempt
         if (attempt === this.retryConfig.maxRetries) {
@@ -129,9 +145,10 @@ export class EmbeddingService {
         // Calculate backoff delay
         const delay = this.calculateBackoffDelay(attempt);
 
+        const errorMessage = error instanceof Error ? error.message : String(error);
         console.warn(
           `${context} failed (attempt ${attempt + 1}/${this.retryConfig.maxRetries + 1}). ` +
-            `Retrying in ${delay}ms... Error: ${error.message}`
+            `Retrying in ${delay}ms... Error: ${errorMessage}`
         );
 
         // Wait before retrying
@@ -147,6 +164,85 @@ export class EmbeddingService {
   }
 
   /**
+   * Generate visual embedding using CLIP model via Replicate
+   * @param imageUrl - URL of the image to generate embedding for
+   * @returns 512-dimensional embedding vector
+   */
+  async generateVisualEmbedding(imageUrl: string): Promise<number[]> {
+    if (!imageUrl || imageUrl.trim().length === 0) {
+      throw new Error("Image URL cannot be empty");
+    }
+
+    return this.withRetry(async () => {
+      try {
+        // Use CLIP model from Replicate
+        // Model: andreasjansson/clip-features
+        const output = await this.replicateClient.run(
+          "andreasjansson/clip-features:75b33f253f7714a281ad3e9b28f63e3232d583716ef6718f2e46641077ea040a",
+          {
+            input: {
+              inputs: imageUrl,
+            },
+          }
+        );
+
+        // The output is an array of embeddings
+        if (!output || !Array.isArray(output) || output.length === 0) {
+          throw new Error("No embedding returned from Replicate CLIP API");
+        }
+
+        // Extract the embedding vector (should be 512-dimensional)
+        const embedding = output[0];
+        
+        if (!Array.isArray(embedding)) {
+          throw new Error("Invalid embedding format from Replicate CLIP API");
+        }
+
+        return embedding as number[];
+      } catch (error: unknown) {
+        console.error("Error generating visual embedding:", error);
+        throw error;
+      }
+    }, "Visual embedding generation");
+  }
+
+  /**
+   * Generate visual embeddings for multiple images in batch
+   * @param imageUrls - Array of image URLs to generate embeddings for
+   * @returns Array of embedding vectors
+   */
+  async generateVisualEmbeddingsBatch(
+    imageUrls: string[]
+  ): Promise<number[][]> {
+    if (!imageUrls || imageUrls.length === 0) {
+      throw new Error("Image URLs array cannot be empty");
+    }
+
+    // Filter out empty URLs
+    const validUrls = imageUrls.filter((url) => url && url.trim().length > 0);
+
+    if (validUrls.length === 0) {
+      throw new Error("No valid image URLs provided");
+    }
+
+    // Process images sequentially to avoid rate limits
+    // In production, you might want to add batching logic
+    const embeddings: number[][] = [];
+    
+    for (const url of validUrls) {
+      try {
+        const embedding = await this.generateVisualEmbedding(url);
+        embeddings.push(embedding);
+      } catch (error) {
+        console.error(`Failed to generate embedding for ${url}:`, error);
+        throw error;
+      }
+    }
+
+    return embeddings;
+  }
+
+  /**
    * Generate text embedding using OpenAI's text-embedding-ada-002 model
    * @param text - Text to generate embedding for
    * @returns 1536-dimensional embedding vector
@@ -158,7 +254,7 @@ export class EmbeddingService {
 
     return this.withRetry(async () => {
       try {
-        const response = await this.client.embeddings.create({
+        const response = await this.openaiClient.embeddings.create({
           model: "text-embedding-ada-002",
           input: text,
         });
@@ -168,10 +264,11 @@ export class EmbeddingService {
         }
 
         return response.data[0].embedding;
-      } catch (error: any) {
+      } catch (error: unknown) {
         // Handle rate limit errors specifically
-        if (error?.status === 429) {
-          const retryAfter = error?.headers?.["retry-after"];
+        const err = error as { status?: number; headers?: Record<string, string> };
+        if (err?.status === 429) {
+          const retryAfter = err?.headers?.["retry-after"];
           if (retryAfter) {
             console.warn(
               `Rate limited by OpenAI. Retry after ${retryAfter} seconds`
@@ -205,7 +302,7 @@ export class EmbeddingService {
 
     return this.withRetry(async () => {
       try {
-        const response = await this.client.embeddings.create({
+        const response = await this.openaiClient.embeddings.create({
           model: "text-embedding-ada-002",
           input: validTexts,
         });
@@ -218,10 +315,11 @@ export class EmbeddingService {
         return response.data
           .sort((a, b) => a.index - b.index)
           .map((item) => item.embedding);
-      } catch (error: any) {
+      } catch (error: unknown) {
         // Handle rate limit errors specifically
-        if (error?.status === 429) {
-          const retryAfter = error?.headers?.["retry-after"];
+        const err = error as { status?: number; headers?: Record<string, string> };
+        if (err?.status === 429) {
+          const retryAfter = err?.headers?.["retry-after"];
           if (retryAfter) {
             console.warn(
               `Rate limited by OpenAI. Retry after ${retryAfter} seconds`
@@ -280,6 +378,128 @@ export class EmbeddingService {
     }
 
     return vector.map((val) => val / magnitude);
+  }
+
+  /**
+   * Combine visual and semantic embeddings with weighted averaging
+   * @param visualEmbedding - 512-dimensional visual embedding from CLIP (optional)
+   * @param semanticEmbedding - 1536-dimensional semantic embedding from OpenAI (optional)
+   * @param visualWeight - Weight for visual embedding (default: 0.6)
+   * @param semanticWeight - Weight for semantic embedding (default: 0.4)
+   * @returns Combined and normalized embedding vector
+   */
+  combineEmbeddings(
+    visualEmbedding: number[] | null,
+    semanticEmbedding: number[] | null,
+    visualWeight: number = 0.6,
+    semanticWeight: number = 0.4
+  ): number[] {
+    // Validate that at least one embedding is provided
+    if (!visualEmbedding && !semanticEmbedding) {
+      throw new Error("At least one embedding (visual or semantic) must be provided");
+    }
+
+    // Validate weights sum to 1
+    if (Math.abs(visualWeight + semanticWeight - 1.0) > 0.001) {
+      throw new Error("Visual and semantic weights must sum to 1.0");
+    }
+
+    // Case 1: Only visual embedding provided
+    if (visualEmbedding && !semanticEmbedding) {
+      return this.normalizeVector(visualEmbedding);
+    }
+
+    // Case 2: Only semantic embedding provided
+    if (!visualEmbedding && semanticEmbedding) {
+      return this.normalizeVector(semanticEmbedding);
+    }
+
+    // Case 3: Both embeddings provided - combine them
+    if (visualEmbedding && semanticEmbedding) {
+      // Normalize both embeddings first
+      const normalizedVisual = this.normalizeVector(visualEmbedding);
+      const normalizedSemantic = this.normalizeVector(semanticEmbedding);
+
+      // Since embeddings have different dimensions, we need to handle this carefully
+      // Strategy: Pad the smaller vector with zeros to match dimensions
+      const maxDim = Math.max(normalizedVisual.length, normalizedSemantic.length);
+      
+      const paddedVisual = [
+        ...normalizedVisual,
+        ...Array(maxDim - normalizedVisual.length).fill(0),
+      ];
+      
+      const paddedSemantic = [
+        ...normalizedSemantic,
+        ...Array(maxDim - normalizedSemantic.length).fill(0),
+      ];
+
+      // Weighted combination
+      const combined = paddedVisual.map((val, idx) => 
+        val * visualWeight + paddedSemantic[idx] * semanticWeight
+      );
+
+      // Normalize the combined vector
+      return this.normalizeVector(combined);
+    }
+
+    // This should never be reached due to earlier validation
+    throw new Error("Unexpected state in combineEmbeddings");
+  }
+
+  /**
+   * Generate combined embedding for an entity
+   * Combines visual embeddings from images and semantic embedding from description
+   * @param imageUrls - Array of image URLs (optional)
+   * @param description - Text description (optional)
+   * @param visualWeight - Weight for visual embedding (default: 0.6)
+   * @param semanticWeight - Weight for semantic embedding (default: 0.4)
+   * @returns Combined embedding vector
+   */
+  async generateCombinedEmbedding(
+    imageUrls: string[] | null,
+    description: string | null,
+    visualWeight: number = 0.6,
+    semanticWeight: number = 0.4
+  ): Promise<number[]> {
+    let visualEmbedding: number[] | null = null;
+    let semanticEmbedding: number[] | null = null;
+
+    // Generate visual embedding if images provided
+    if (imageUrls && imageUrls.length > 0) {
+      const visualEmbeddings = await this.generateVisualEmbeddingsBatch(imageUrls);
+      
+      // Average multiple visual embeddings if multiple images
+      if (visualEmbeddings.length === 1) {
+        visualEmbedding = visualEmbeddings[0];
+      } else {
+        // Average the embeddings
+        const dim = visualEmbeddings[0].length;
+        visualEmbedding = Array(dim).fill(0);
+        
+        for (const embedding of visualEmbeddings) {
+          for (let i = 0; i < dim; i++) {
+            visualEmbedding[i] += embedding[i];
+          }
+        }
+        
+        // Divide by count to get average
+        visualEmbedding = visualEmbedding.map(val => val / visualEmbeddings.length);
+      }
+    }
+
+    // Generate semantic embedding if description provided
+    if (description && description.trim().length > 0) {
+      semanticEmbedding = await this.generateTextEmbedding(description);
+    }
+
+    // Combine embeddings
+    return this.combineEmbeddings(
+      visualEmbedding,
+      semanticEmbedding,
+      visualWeight,
+      semanticWeight
+    );
   }
 }
 

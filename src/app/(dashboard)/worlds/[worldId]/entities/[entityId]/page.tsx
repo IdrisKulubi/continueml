@@ -9,6 +9,7 @@ import { getCurrentUserId } from "@/lib/auth/session";
 import { worldService } from "@/lib/worlds/world-service";
 import { EntityImageGallery } from "@/components/entities/entity-image-gallery";
 import { EntityActions } from "@/components/entities/entity-actions";
+import { EmbeddingStatus } from "@/components/entities/embedding-status";
 import {
   User,
   MapPin,
@@ -208,6 +209,13 @@ export default async function EntityDetailPage({ params }: PageProps) {
               </div>
             </section>
           )}
+
+          {/* Embedding Status */}
+          <EmbeddingStatus
+            entityId={entityId}
+            hasImages={images.length > 0}
+            hasDescription={!!entity.description && entity.description.trim().length > 0}
+          />
 
           {/* Metadata */}
           <section>

@@ -11,6 +11,7 @@ import {
   deleteEntityImages,
   IMAGE_CONFIG,
 } from "@/lib/storage/image-upload";
+import { generateEmbeddingsAction, deleteEntityEmbeddingsAction, regenerateEmbeddingsAction } from "./embeddings";
 import type { Entity, EntityImage, EntityFilters } from "@/types";
 
 // ============================================================================
@@ -117,6 +118,13 @@ export async function createEntityAction(
 
     // Create entity
     const entity = await entityService.createEntity(worldId, validatedData);
+
+    // Generate embeddings in background (don't wait for completion)
+    // This is async and will not block the response
+    generateEmbeddingsAction(entity.id).catch((error) => {
+      console.error("Background embedding generation failed:", error);
+      // Log error but don't fail the entity creation
+    });
 
     // Revalidate relevant paths
     revalidatePath(`/worlds/${worldId}/entities`);
@@ -259,6 +267,14 @@ export async function updateEntityAction(
       return { success: false, error: "Entity not found" };
     }
 
+    // If description or tags were updated, regenerate embeddings in background
+    if (validatedData.description !== undefined || validatedData.tags !== undefined) {
+      regenerateEmbeddingsAction(entityId).catch((error) => {
+        console.error("Background embedding regeneration failed:", error);
+        // Log error but don't fail the entity update
+      });
+    }
+
     // Revalidate relevant paths
     revalidatePath(`/worlds/${entity.worldId}/entities`);
     revalidatePath(`/worlds/${entity.worldId}/entities/${entityId}`);
@@ -298,6 +314,12 @@ export async function deleteEntityAction(
     if (!world) {
       return { success: false, error: "Unauthorized" };
     }
+
+    // Delete embeddings from vector database
+    await deleteEntityEmbeddingsAction(entityId).catch((error) => {
+      console.error("Failed to delete embeddings:", error);
+      // Log error but continue with entity deletion
+    });
 
     // Delete entity and get images for cleanup
     const images = await entityService.deleteEntity(entityId);
@@ -398,6 +420,12 @@ export async function uploadEntityImageAction(
       isPrimary: validatedImageData.isPrimary,
     });
 
+    // Regenerate embeddings to include new image
+    regenerateEmbeddingsAction(entityId).catch((error) => {
+      console.error("Background embedding regeneration failed:", error);
+      // Log error but don't fail the image upload
+    });
+
     // Revalidate relevant paths
     revalidatePath(`/worlds/${result.entity.worldId}/entities/${entityId}`);
 
@@ -445,6 +473,12 @@ export async function deleteEntityImageAction(
     // Delete image from storage
     await deleteEntityImage(image.storageKey);
 
+    // Regenerate embeddings without the deleted image
+    regenerateEmbeddingsAction(image.entityId).catch((error) => {
+      console.error("Background embedding regeneration failed:", error);
+      // Log error but don't fail the image deletion
+    });
+
     // Revalidate relevant paths
     revalidatePath(`/worlds/${result.entity.worldId}/entities/${image.entityId}`);
 
@@ -489,6 +523,12 @@ export async function duplicateEntityAction(
     if (!duplicatedEntity) {
       return { success: false, error: "Failed to duplicate entity" };
     }
+
+    // Generate embeddings for the duplicated entity
+    generateEmbeddingsAction(duplicatedEntity.id).catch((error) => {
+      console.error("Background embedding generation failed:", error);
+      // Log error but don't fail the duplication
+    });
 
     // Revalidate relevant paths
     revalidatePath(`/worlds/${result.entity.worldId}/entities`);
