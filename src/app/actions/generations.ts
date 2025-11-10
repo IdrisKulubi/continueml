@@ -5,6 +5,8 @@ import { z } from "zod";
 import { generationService } from "@/lib/generations/generation-service";
 import { worldService } from "@/lib/worlds/world-service";
 import { getCurrentUserId } from "@/lib/auth/session";
+import { consistencyService } from "@/lib/consistency/consistency-service";
+import { shouldNotifyConsistency } from "@/lib/utils/notifications";
 import type { Generation, GenerationFilters } from "@/types";
 
 // ============================================================================
@@ -271,6 +273,42 @@ export async function updateGenerationStatusAction(
       return { success: false, error: { message: "Generation not found" } };
     }
 
+    // If generation completed successfully with a result URL, automatically check consistency
+    if (
+      validatedData.status === "completed" &&
+      validatedData.resultUrl &&
+      generation.entityIds &&
+      generation.entityIds.length > 0
+    ) {
+      try {
+        // Perform consistency analysis in the background
+        const analysis = await consistencyService.analyzeConsistency(
+          generationId,
+          validatedData.resultUrl,
+          "image" // Default to image, could be enhanced to detect type
+        );
+
+        // Update generation with consistency score
+        await consistencyService.updateGenerationConsistency(
+          generationId,
+          analysis.overallScore
+        );
+
+        // Flag low consistency generations for user notification
+        if (shouldNotifyConsistency(analysis.overallScore)) {
+          console.warn(
+            `Low consistency detected for generation ${generationId}: ${analysis.overallScore}% - ${analysis.message}`
+          );
+        }
+      } catch (consistencyError) {
+        // Log error but don't fail the status update
+        console.error(
+          "Error checking consistency (non-blocking):",
+          consistencyError
+        );
+      }
+    }
+
     // Revalidate relevant paths
     revalidatePath(`/worlds/${generation.worldId}/history`);
     revalidatePath(`/worlds/${generation.worldId}/generate`);
@@ -477,5 +515,86 @@ export async function getWorldGenerationStatsAction(
   } catch (error) {
     console.error("Error fetching generation stats:", error);
     return { success: false, error: { message: "Failed to fetch generation statistics" } };
+  }
+}
+
+/**
+ * Manually trigger consistency check for a generation
+ * This is useful when consistency wasn't automatically checked or needs to be re-checked
+ */
+export async function triggerConsistencyCheckAction(
+  generationId: string
+): Promise<
+  ActionResponse<{
+    overallScore: number;
+    recommendation: "accept" | "review" | "regenerate";
+    message: string;
+  }>
+> {
+  try {
+    // Get current user
+    const userId = await getCurrentUserId();
+    if (!userId) {
+      return { success: false, error: { message: "Unauthorized" } };
+    }
+
+    // Get generation to verify ownership
+    const generation = await generationService.getGenerationById(generationId);
+    if (!generation) {
+      return { success: false, error: { message: "Generation not found" } };
+    }
+
+    // Verify ownership
+    if (generation.userId !== userId) {
+      return { success: false, error: { message: "Unauthorized" } };
+    }
+
+    // Check if generation has a result URL
+    if (!generation.resultUrl) {
+      return {
+        success: false,
+        error: { message: "Generation has no result URL to analyze" },
+      };
+    }
+
+    // Check if generation has entities
+    if (!generation.entityIds || generation.entityIds.length === 0) {
+      return {
+        success: false,
+        error: { message: "Generation has no associated entities" },
+      };
+    }
+
+    // Perform consistency analysis
+    const analysis = await consistencyService.analyzeConsistency(
+      generationId,
+      generation.resultUrl,
+      "image"
+    );
+
+    // Update generation with consistency score
+    await consistencyService.updateGenerationConsistency(
+      generationId,
+      analysis.overallScore
+    );
+
+    // Revalidate relevant paths
+    revalidatePath(`/worlds/${generation.worldId}/history`);
+    revalidatePath(`/worlds/${generation.worldId}/generate`);
+
+    return {
+      success: true,
+      data: {
+        overallScore: analysis.overallScore,
+        recommendation: analysis.recommendation,
+        message: analysis.message,
+      },
+    };
+  } catch (error) {
+    console.error("Error triggering consistency check:", error);
+    return {
+      success: false,
+      error: { message: "Failed to check consistency" },
+    };
   }
 }

@@ -150,6 +150,14 @@ export default function GenerationCard({ generation, worldId }: GenerationCardPr
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
+                {generation.consistencyScore !== null && generation.resultUrl && (
+                  <DropdownMenuItem
+                    onClick={() => router.push(`/worlds/${worldId}/history/${generation.id}`)}
+                  >
+                    <Sparkles className="h-4 w-4 mr-2" />
+                    View Analysis
+                  </DropdownMenuItem>
+                )}
                 {generation.status === "failed" && (
                   <DropdownMenuItem onClick={handleRetry} disabled={isRetrying}>
                     <RefreshCw className="h-4 w-4 mr-2" />
