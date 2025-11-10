@@ -271,7 +271,8 @@ export async function regenerateEmbeddingsAction(
   entityId: string
 ): Promise<EmbeddingGenerationResult> {
   try {
-    // Delete existing embeddings
+    // Delete existing embeddings (if any exist)
+    // This will gracefully handle the case where no embeddings exist yet
     await vectorService.deleteEntityVectors(entityId);
 
     // Generate new embeddings

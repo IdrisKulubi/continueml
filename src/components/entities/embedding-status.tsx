@@ -26,16 +26,22 @@ export function EmbeddingStatus({
       const result = await regenerateEmbeddingsAction(entityId);
       
       if (result.success) {
-        toast.success("Embeddings regenerated successfully", {
-          description: `Generated ${result.embeddingIds.length} embeddings`,
-        });
+        if (result.embeddingIds.length > 0) {
+          toast.success("Embeddings generated successfully", {
+            description: `Created ${result.embeddingIds.length} embedding${result.embeddingIds.length > 1 ? 's' : ''}`,
+          });
+        } else {
+          toast.info("No embeddings to generate", {
+            description: "Add images or a description to enable embeddings",
+          });
+        }
       } else {
-        toast.error("Failed to regenerate embeddings", {
+        toast.error("Failed to generate embeddings", {
           description: result.error || "Unknown error occurred",
         });
       }
     } catch (error) {
-      toast.error("Failed to regenerate embeddings", {
+      toast.error("Failed to generate embeddings", {
         description: error instanceof Error ? error.message : "Unknown error",
       });
     } finally {
@@ -87,12 +93,12 @@ export function EmbeddingStatus({
               {isRegenerating ? (
                 <>
                   <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                  Regenerating...
+                  Generating...
                 </>
               ) : (
                 <>
                   <RefreshCw className="w-4 h-4 mr-2" />
-                  Regenerate Embeddings
+                  Generate Embeddings
                 </>
               )}
             </Button>

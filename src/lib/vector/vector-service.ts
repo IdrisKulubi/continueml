@@ -150,9 +150,27 @@ export class VectorService {
         await index.deleteMany(batch);
       }
     } catch (error) {
+      // Check if it's a 404 error (vectors don't exist)
+      // Pinecone errors can have status in different places
+      const err = error as { status?: number; cause?: { status?: number } };
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      
+      // Check for 404 in multiple places (Pinecone error structure varies)
+      const is404 = 
+        err?.status === 404 || 
+        err?.cause?.status === 404 ||
+        errorMessage.includes("404") ||
+        errorMessage.includes("PineconeNotFoundError");
+      
+      if (is404) {
+        // Vectors don't exist, which is fine - nothing to delete
+        console.log("No vectors found to delete (404), continuing...");
+        return;
+      }
+      
       console.error("Error deleting vectors from Pinecone:", error);
       throw new Error(
-        `Failed to delete vectors: ${error instanceof Error ? error.message : "Unknown error"}`
+        `Failed to delete vectors: ${errorMessage}`
       );
     }
   }
@@ -168,9 +186,27 @@ export class VectorService {
       const index = await this.getIndex();
       await index.deleteMany(filter);
     } catch (error) {
+      // Check if it's a 404 error (vectors don't exist)
+      // Pinecone errors can have status in different places
+      const err = error as { status?: number; cause?: { status?: number } };
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      
+      // Check for 404 in multiple places (Pinecone error structure varies)
+      const is404 = 
+        err?.status === 404 || 
+        err?.cause?.status === 404 ||
+        errorMessage.includes("404") ||
+        errorMessage.includes("PineconeNotFoundError");
+      
+      if (is404) {
+        // Vectors don't exist, which is fine - nothing to delete
+        console.log("No vectors found to delete (404), continuing...");
+        return;
+      }
+      
       console.error("Error deleting vectors by filter from Pinecone:", error);
       throw new Error(
-        `Failed to delete vectors by filter: ${error instanceof Error ? error.message : "Unknown error"}`
+        `Failed to delete vectors by filter: ${errorMessage}`
       );
     }
   }
