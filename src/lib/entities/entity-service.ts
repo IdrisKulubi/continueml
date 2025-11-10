@@ -80,23 +80,23 @@ export class EntityService {
       );
     }
 
-    let query = db
-      .select()
-      .from(entities)
-      .where(and(...conditions));
-
     // Apply search filter (searches name and description)
     if (filters.search) {
       const searchPattern = `%${filters.search}%`;
-      query = query.where(
-        or(
-          ilike(entities.name, searchPattern),
-          ilike(entities.description, searchPattern)
-        )
+      const searchCondition = or(
+        ilike(entities.name, searchPattern),
+        ilike(entities.description, searchPattern)
       );
+      if (searchCondition) {
+        conditions.push(searchCondition);
+      }
     }
 
-    const results = await query.orderBy(desc(entities.updatedAt));
+    const results = await db
+      .select()
+      .from(entities)
+      .where(conditions.length > 0 ? and(...conditions) : undefined)
+      .orderBy(desc(entities.updatedAt));
 
     // Fetch primary images for all entities
     const entitiesWithImages = await Promise.all(

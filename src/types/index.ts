@@ -176,22 +176,36 @@ export interface EntityFilters {
   type?: EntityType;
   tags?: string[];
   search?: string;
-  branchId?: string;
+  branchId?: string | null;
   isArchived?: boolean;
 }
 
 export interface CreateGenerationInput {
   worldId: string;
   branchId?: string;
-  prompt: string;
+  userId: string;
+  originalPrompt: string;
+  enhancedPrompt: string;
   entityIds?: string[];
   tool: GenerationTool;
 }
 
+export interface UpdateGenerationInput {
+  status?: GenerationStatus;
+  resultUrl?: string;
+  consistencyScore?: number;
+  errorMessage?: string;
+}
+
 export interface GenerationFilters {
   worldId?: string;
+  userId?: string;
   entityId?: string;
   status?: GenerationStatus;
+  tool?: GenerationTool;
+  branchId?: string | null;
+  startDate?: Date;
+  endDate?: Date;
   limit?: number;
   offset?: number;
 }
