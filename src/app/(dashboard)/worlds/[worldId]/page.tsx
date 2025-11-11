@@ -5,7 +5,9 @@ import { Badge } from "@/components/ui/badge";
 import { DotPattern } from "@/components/ui/dot-pattern";
 import { worldService } from "@/lib/worlds/world-service";
 import { getCurrentUserId } from "@/lib/auth/session";
-import { Layers, Plus, ArrowLeft } from "lucide-react";
+import { getBranchesAction } from "@/app/actions/branches";
+import { BranchSelector } from "@/components/branches/branch-selector";
+import { Layers, Plus, ArrowLeft, GitBranch } from "lucide-react";
 
 interface PageProps {
   params: Promise<{ worldId: string }>;
@@ -24,6 +26,10 @@ export default async function WorldDetailPage({ params }: PageProps) {
   if (!world) {
     notFound();
   }
+
+  // Fetch branches
+  const branchesResult = await getBranchesAction(worldId);
+  const branches = branchesResult.success ? branchesResult.data : [];
 
   return (
     <div className="relative min-h-screen bg-linear-to-br from-gray-50 via-indigo-50/30 to-purple-50/30 dark:from-gray-950 dark:via-indigo-950/30 dark:to-purple-950/30">
@@ -53,14 +59,19 @@ export default async function WorldDetailPage({ params }: PageProps) {
 
       {/* Header */}
       <div className="mb-8">
-        <h1 className="text-4xl font-bold text-gray-900 dark:text-gray-100 mb-3">
-          {world.name}
-        </h1>
-        {world.description && (
-          <p className="text-lg text-gray-600 dark:text-gray-400 mb-4">
-            {world.description}
-          </p>
-        )}
+        <div className="flex items-start justify-between mb-4">
+          <div className="flex-1">
+            <h1 className="text-4xl font-bold text-gray-900 dark:text-gray-100 mb-3">
+              {world.name}
+            </h1>
+            {world.description && (
+              <p className="text-lg text-gray-600 dark:text-gray-400 mb-4">
+                {world.description}
+              </p>
+            )}
+          </div>
+          <BranchSelector worldId={worldId} branches={branches} />
+        </div>
         {world.tags && world.tags.length > 0 && (
           <div className="flex flex-wrap gap-2">
             {world.tags.map((tag) => (
@@ -115,20 +126,20 @@ export default async function WorldDetailPage({ params }: PageProps) {
         </Link>
 
         <Link
-          href={`/worlds/${worldId}/history`}
+          href={`/worlds/${worldId}/branches`}
           className="group bg-white dark:bg-gray-900 border border-pink-200 dark:border-pink-800/50 rounded-2xl p-8 hover:shadow-lg transition-all duration-300 hover:-translate-y-1"
         >
           <div className="flex items-center justify-between mb-4">
             <div className="w-12 h-12 rounded-full bg-pink-50 dark:bg-pink-950/30 flex items-center justify-center">
-              <span className="text-2xl">📜</span>
+              <GitBranch className="w-6 h-6 text-pink-600 dark:text-pink-400" />
             </div>
             <Plus className="w-5 h-5 text-gray-400 group-hover:text-pink-600 dark:group-hover:text-pink-400 transition-colors" />
           </div>
           <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-2">
-            History
+            Branches
           </h3>
           <p className="text-gray-600 dark:text-gray-400">
-            View and manage your generation history
+            Manage alternate versions of your world
           </p>
         </Link>
 

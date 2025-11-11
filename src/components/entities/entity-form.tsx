@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { createEntityAction } from "@/app/actions/entities";
+import { useBranchStore } from "@/lib/stores/branch-store";
 import { EntityType } from "@/types";
 import { Upload, X, Image as ImageIcon, Loader2 } from "lucide-react";
 import { toast } from "sonner";
@@ -46,6 +47,7 @@ const ALLOWED_TYPES = ["image/jpeg", "image/png", "image/webp"];
 export function EntityForm({ worldId, initialData, mode = "create" }: EntityFormProps) {
   const router = useRouter();
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const { currentBranch } = useBranchStore();
 
   const [name, setName] = useState(initialData?.name || "");
   const [type, setType] = useState<EntityType>(initialData?.type || "character");
@@ -170,6 +172,11 @@ export function EntityForm({ worldId, initialData, mode = "create" }: EntityForm
       formData.append("type", type);
       formData.append("description", description);
       formData.append("tags", tags.join(","));
+      
+      // Include branchId if a branch is selected
+      if (currentBranch) {
+        formData.append("branchId", currentBranch.id);
+      }
 
       const result = await createEntityAction(worldId, formData);
 

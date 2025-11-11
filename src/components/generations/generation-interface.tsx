@@ -13,6 +13,7 @@ import { Sparkles, Loader2, Copy, Check } from "lucide-react";
 import { toast } from "sonner";
 import type { Entity, EntityImage, GenerationTool } from "@/types";
 import { createGenerationAction } from "@/app/actions/generations";
+import { useBranchStore } from "@/lib/stores/branch-store";
 import EntitySelector from "./entity-selector";
 import PromptEnhancementPreview from "./prompt-enhancement-preview";
 
@@ -39,6 +40,7 @@ export default function GenerationInterface({
   entities,
 }: GenerationInterfaceProps) {
   const router = useRouter();
+  const { currentBranch } = useBranchStore();
   const [prompt, setPrompt] = useState("");
   const [selectedTool, setSelectedTool] = useState<GenerationTool>("runway");
   const [selectedEntityIds, setSelectedEntityIds] = useState<string[]>([]);
@@ -123,6 +125,7 @@ export default function GenerationInterface({
         originalPrompt: prompt,
         entityIds: selectedEntityIds.length > 0 ? selectedEntityIds : detectedEntityIds,
         tool: selectedTool,
+        branchId: currentBranch?.id,
       });
 
       if (result.success && result.data) {

@@ -3,7 +3,9 @@ import { notFound } from "next/navigation";
 import { auth } from "../../../../../../auth";
 import { worldService } from "@/lib/worlds/world-service";
 import { entityService } from "@/lib/entities/entity-service";
+import { getBranchesAction } from "@/app/actions/branches";
 import GenerationInterface from "@/components/generations/generation-interface";
+import { BranchSelector } from "@/components/branches/branch-selector";
 import { Skeleton } from "@/components/ui/skeleton";
 
 interface GeneratePageProps {
@@ -32,13 +34,22 @@ async function GenerateContent({ worldId }: { worldId: string }) {
     isArchived: false,
   });
 
+  // Fetch branches for selector
+  const branchesResult = await getBranchesAction(worldId);
+  const branches = branchesResult.success ? branchesResult.data : [];
+
   return (
     <div className="container mx-auto py-8 px-4 max-w-5xl">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold mb-2">Generate Content</h1>
-        <p className="text-muted-foreground">
-          Create AI-generated content with automatic prompt enhancement using your world&apos;s entities
-        </p>
+        <div className="flex items-start justify-between mb-4">
+          <div className="flex-1">
+            <h1 className="text-3xl font-bold mb-2">Generate Content</h1>
+            <p className="text-muted-foreground">
+              Create AI-generated content with automatic prompt enhancement using your world&apos;s entities
+            </p>
+          </div>
+          <BranchSelector worldId={worldId} branches={branches} />
+        </div>
       </div>
 
       <GenerationInterface
