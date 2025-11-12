@@ -164,7 +164,6 @@ export class VectorService {
       
       if (is404) {
         // Vectors don't exist, which is fine - nothing to delete
-        console.log("No vectors found to delete (404), continuing...");
         return;
       }
       
@@ -200,7 +199,6 @@ export class VectorService {
       
       if (is404) {
         // Vectors don't exist, which is fine - nothing to delete
-        console.log("No vectors found to delete (404), continuing...");
         return;
       }
       

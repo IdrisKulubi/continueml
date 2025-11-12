@@ -186,9 +186,7 @@ export class EmbeddingService {
           }
         );
 
-        // Log the output structure for debugging
-        console.log("Replicate CLIP API output type:", typeof output);
-        console.log("Replicate CLIP API output:", JSON.stringify(output).substring(0, 200));
+       
 
         // The output format can vary - handle different cases
         let embedding: number[];
