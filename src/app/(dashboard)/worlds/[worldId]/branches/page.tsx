@@ -1,18 +1,19 @@
 import { Suspense } from "react";
 import { notFound } from "next/navigation";
+import Link from "next/link";
 import { getCurrentUserId } from "@/lib/auth/session";
 import { worldService } from "@/lib/worlds/world-service";
 import { getBranchesAction } from "@/app/actions/branches";
 import { BranchCard } from "@/components/branches/branch-card";
 import { Button } from "@/components/ui/button";
-import { GitBranch, Plus } from "lucide-react";
+import { GitBranch, Plus, ArrowLeft } from "lucide-react";
 import { CreateBranchDialog } from "@/components/branches/create-branch-dialog";
 import { Skeleton } from "@/components/ui/skeleton";
 
 interface BranchesPageProps {
-  params: {
+  params: Promise<{
     worldId: string;
-  };
+  }>;
 }
 
 async function BranchesContent({ worldId }: { worldId: string }) {
@@ -36,6 +37,14 @@ async function BranchesContent({ worldId }: { worldId: string }) {
 
   return (
     <div className="space-y-6">
+      {/* Back Button */}
+      <Button asChild variant="ghost" className="mb-2">
+        <Link href={`/worlds/${worldId}`}>
+          <ArrowLeft className="w-4 h-4 mr-2" />
+          Back to World
+        </Link>
+      </Button>
+
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
@@ -114,10 +123,12 @@ function BranchesLoading() {
   );
 }
 
-export default function BranchesPage({ params }: BranchesPageProps) {
+export default async function BranchesPage({ params }: BranchesPageProps) {
+  const { worldId } = await params;
+  
   return (
     <Suspense fallback={<BranchesLoading />}>
-      <BranchesContent worldId={params.worldId} />
+      <BranchesContent worldId={worldId} />
     </Suspense>
   );
 }

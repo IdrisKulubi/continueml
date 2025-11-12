@@ -24,7 +24,7 @@ import {
 import { Loader2, GitBranch, Info } from "lucide-react";
 import { createBranchAction, getBranchEntityCountAction } from "@/app/actions/branches";
 import { useBranchStore } from "@/lib/stores/branch-store";
-import { useToast } from "@/hooks/use-toast";
+import { toast } from "sonner";
 
 interface CreateBranchDialogProps {
   worldId: string;
@@ -42,11 +42,10 @@ export function CreateBranchDialog({
   const [isPending, startTransition] = useTransition();
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
-  const [parentBranchId, setParentBranchId] = useState<string>("");
+  const [parentBranchId, setParentBranchId] = useState<string>("main");
   const [entityCount, setEntityCount] = useState<number | null>(null);
   const [loadingCount, setLoadingCount] = useState(false);
   const { addBranch, setCurrentBranch } = useBranchStore();
-  const { toast } = useToast();
 
   // Load entity count when parent branch changes
   useEffect(() => {
@@ -55,7 +54,7 @@ export function CreateBranchDialog({
     const loadEntityCount = async () => {
       setLoadingCount(true);
       try {
-        if (parentBranchId) {
+        if (parentBranchId && parentBranchId !== "main") {
           const result = await getBranchEntityCountAction(parentBranchId);
           if (result.success) {
             setEntityCount(result.data.count);
@@ -79,11 +78,7 @@ export function CreateBranchDialog({
     e.preventDefault();
 
     if (!name.trim()) {
-      toast({
-        title: "Validation Error",
-        description: "Branch name is required",
-        variant: "destructive",
-      });
+      toast.error("Branch name is required");
       return;
     }
 
@@ -93,7 +88,7 @@ export function CreateBranchDialog({
       if (description.trim()) {
         formData.append("description", description.trim());
       }
-      if (parentBranchId) {
+      if (parentBranchId && parentBranchId !== "main") {
         formData.append("parentBranchId", parentBranchId);
       }
 
@@ -104,23 +99,16 @@ export function CreateBranchDialog({
         addBranch(result.data);
         setCurrentBranch(result.data);
 
-        toast({
-          title: "Branch Created",
-          description: `Successfully created branch "${result.data.name}"`,
-        });
+        toast.success(`Successfully created branch "${result.data.name}"`);
 
         // Reset form and close dialog
         setName("");
         setDescription("");
-        setParentBranchId("");
+        setParentBranchId("main");
         setEntityCount(null);
         onOpenChange(false);
       } else {
-        toast({
-          title: "Error",
-          description: result.error || "Failed to create branch",
-          variant: "destructive",
-        });
+        toast.error(result.error || "Failed to create branch");
       }
     });
   };
@@ -130,7 +118,7 @@ export function CreateBranchDialog({
       // Reset form when closing
       setName("");
       setDescription("");
-      setParentBranchId("");
+      setParentBranchId("main");
       setEntityCount(null);
     }
     onOpenChange(newOpen);
@@ -198,7 +186,7 @@ export function CreateBranchDialog({
                   <SelectValue placeholder="Main (default)" />
                 </SelectTrigger>
                 <SelectContent className="bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-700">
-                  <SelectItem value="">Main</SelectItem>
+                  <SelectItem value="main">Main</SelectItem>
                   {branches.map((branch) => (
                     <SelectItem key={branch.id} value={branch.id}>
                       {branch.name}

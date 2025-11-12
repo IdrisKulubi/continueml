@@ -15,7 +15,7 @@ import {
 import { Loader2 } from "lucide-react";
 import { deleteBranchAction } from "@/app/actions/branches";
 import { useBranchStore } from "@/lib/stores/branch-store";
-import { useToast } from "@/hooks/use-toast";
+import { toast } from "sonner";
 
 interface DeleteBranchDialogProps {
   branch: Branch;
@@ -30,7 +30,6 @@ export function DeleteBranchDialog({
 }: DeleteBranchDialogProps) {
   const [isPending, startTransition] = useTransition();
   const { removeBranch, currentBranch, setCurrentBranch } = useBranchStore();
-  const { toast } = useToast();
 
   const handleDelete = () => {
     startTransition(async () => {
@@ -45,18 +44,11 @@ export function DeleteBranchDialog({
           setCurrentBranch(null);
         }
 
-        toast({
-          title: "Branch Deleted",
-          description: `Successfully deleted branch "${branch.name}"`,
-        });
+        toast.success(`Successfully deleted branch "${branch.name}"`);
 
         onOpenChange(false);
       } else {
-        toast({
-          title: "Error",
-          description: result.error || "Failed to delete branch",
-          variant: "destructive",
-        });
+        toast.error(result.error || "Failed to delete branch");
       }
     });
   };

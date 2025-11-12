@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { DotPattern } from "@/components/ui/dot-pattern";
-import { Plus } from "lucide-react";
+import { Plus, ArrowLeft } from "lucide-react";
 import { getBranchesAction } from "@/app/actions/branches";
 import { worldService } from "@/lib/worlds/world-service";
 import { getCurrentUserId } from "@/lib/auth/session";
@@ -59,6 +59,14 @@ export default async function EntitiesPage({ params, searchParams }: PageProps) 
       
       {/* Content */}
       <div className="relative z-10 container mx-auto px-4 py-8 max-w-7xl">
+        {/* Back Button */}
+        <Button asChild variant="ghost" className="mb-6">
+          <Link href={`/worlds/${worldId}`}>
+            <ArrowLeft className="w-4 h-4 mr-2" />
+            Back to World
+          </Link>
+        </Button>
+
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <div className="flex-1">
