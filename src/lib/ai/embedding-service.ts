@@ -186,19 +186,70 @@ export class EmbeddingService {
           }
         );
 
-        // The output is an array of embeddings
-        if (!output || !Array.isArray(output) || output.length === 0) {
-          throw new Error("No embedding returned from Replicate CLIP API");
+        // Log the output structure for debugging
+        console.log("Replicate CLIP API output type:", typeof output);
+        console.log("Replicate CLIP API output:", JSON.stringify(output).substring(0, 200));
+
+        // The output format can vary - handle different cases
+        let embedding: number[];
+
+        if (Array.isArray(output)) {
+          // If output is an array, check if it's the embedding directly or nested
+          if (output.length === 0) {
+            throw new Error("Empty embedding array returned from Replicate CLIP API");
+          }
+          
+          // Check if first element is a number (direct embedding)
+          if (typeof output[0] === "number") {
+            embedding = output as number[];
+          } 
+          // Check if first element is an array (nested array)
+          else if (Array.isArray(output[0])) {
+            embedding = output[0] as number[];
+          } 
+          // Check if first element is an object with embedding property
+          else if (typeof output[0] === "object" && output[0] !== null) {
+            const firstItem = output[0] as Record<string, unknown>;
+            if (Array.isArray(firstItem.embedding)) {
+              embedding = firstItem.embedding as number[];
+            } else if (Array.isArray(firstItem.embeddings)) {
+              embedding = (firstItem.embeddings as number[][])[0];
+            } else if (Array.isArray(firstItem.features)) {
+              embedding = firstItem.features as number[];
+            } else {
+              throw new Error(`Invalid embedding format: object keys are ${Object.keys(firstItem).join(", ")}`);
+            }
+          } 
+          else {
+            throw new Error(`Invalid embedding format: first element is ${typeof output[0]}`);
+          }
+        } else if (output && typeof output === "object") {
+          // If output is an object, try to extract embedding from common keys
+          const obj = output as Record<string, unknown>;
+          if (Array.isArray(obj.embedding)) {
+            embedding = obj.embedding as number[];
+          } else if (Array.isArray(obj.embeddings)) {
+            embedding = (obj.embeddings as number[][])[0];
+          } else if (Array.isArray(obj.features)) {
+            embedding = obj.features as number[];
+          } else {
+            throw new Error(`Invalid embedding format: object keys are ${Object.keys(obj).join(", ")}`);
+          }
+        } else {
+          throw new Error(`Invalid embedding format: output type is ${typeof output}`);
         }
 
-        // Extract the embedding vector (should be 512-dimensional)
-        const embedding = output[0];
-        
-        if (!Array.isArray(embedding)) {
-          throw new Error("Invalid embedding format from Replicate CLIP API");
+        // Validate embedding is an array of numbers
+        if (!Array.isArray(embedding) || embedding.length === 0) {
+          throw new Error("Embedding is not a valid array");
         }
 
-        return embedding as number[];
+        if (typeof embedding[0] !== "number") {
+          throw new Error(`Embedding contains non-numeric values: ${typeof embedding[0]}`);
+        }
+
+        console.log(`Successfully extracted embedding with ${embedding.length} dimensions`);
+        return embedding;
       } catch (error: unknown) {
         console.error("Error generating visual embedding:", error);
         throw error;
@@ -381,6 +432,27 @@ export class EmbeddingService {
   }
 
   /**
+   * Resize an embedding to a target dimension
+   * Uses truncation if source is larger, padding with zeros if smaller
+   * @param embedding - Source embedding vector
+   * @param targetDim - Target dimension
+   * @returns Resized embedding vector
+   */
+  resizeEmbedding(embedding: number[], targetDim: number): number[] {
+    if (embedding.length === targetDim) {
+      return embedding;
+    }
+
+    if (embedding.length > targetDim) {
+      // Truncate to target dimension
+      return embedding.slice(0, targetDim);
+    }
+
+    // Pad with zeros to reach target dimension
+    return [...embedding, ...Array(targetDim - embedding.length).fill(0)];
+  }
+
+  /**
    * Combine visual and semantic embeddings with weighted averaging
    * @param visualEmbedding - 512-dimensional visual embedding from CLIP (optional)
    * @param semanticEmbedding - 1536-dimensional semantic embedding from OpenAI (optional)
@@ -420,27 +492,30 @@ export class EmbeddingService {
       const normalizedVisual = this.normalizeVector(visualEmbedding);
       const normalizedSemantic = this.normalizeVector(semanticEmbedding);
 
-      // Since embeddings have different dimensions, we need to handle this carefully
-      // Strategy: Pad the smaller vector with zeros to match dimensions
-      const maxDim = Math.max(normalizedVisual.length, normalizedSemantic.length);
-      
-      const paddedVisual = [
-        ...normalizedVisual,
-        ...Array(maxDim - normalizedVisual.length).fill(0),
-      ];
-      
-      const paddedSemantic = [
-        ...normalizedSemantic,
-        ...Array(maxDim - normalizedSemantic.length).fill(0),
-      ];
+      // Target dimension for Pinecone (must match index configuration)
+      const TARGET_DIM = 1024;
 
-      // Weighted combination
-      const combined = paddedVisual.map((val, idx) => 
-        val * visualWeight + paddedSemantic[idx] * semanticWeight
-      );
+      // Strategy: Reduce or pad each embedding to TARGET_DIM/2, then concatenate
+      // This ensures the final combined embedding is exactly TARGET_DIM
+      const halfDim = Math.floor(TARGET_DIM / 2);
+
+      // Reduce or pad visual embedding to halfDim
+      const resizedVisual = this.resizeEmbedding(normalizedVisual, halfDim);
+      
+      // Reduce or pad semantic embedding to halfDim
+      const resizedSemantic = this.resizeEmbedding(normalizedSemantic, halfDim);
+
+      // Concatenate the two halves
+      const combined = [...resizedVisual, ...resizedSemantic];
+
+      // Apply weights by scaling each half
+      const weightedCombined = [
+        ...combined.slice(0, halfDim).map(v => v * visualWeight),
+        ...combined.slice(halfDim).map(v => v * semanticWeight)
+      ];
 
       // Normalize the combined vector
-      return this.normalizeVector(combined);
+      return this.normalizeVector(weightedCombined);
     }
 
     // This should never be reached due to earlier validation

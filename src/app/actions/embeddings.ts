@@ -16,6 +16,27 @@ interface EmbeddingGenerationResult {
 }
 
 /**
+ * Resize an embedding to a target dimension
+ * Uses truncation if source is larger, padding with zeros if smaller
+ * @param embedding - Source embedding vector
+ * @param targetDim - Target dimension
+ * @returns Resized embedding vector
+ */
+function resizeEmbedding(embedding: number[], targetDim: number): number[] {
+  if (embedding.length === targetDim) {
+    return embedding;
+  }
+
+  if (embedding.length > targetDim) {
+    // Truncate to target dimension
+    return embedding.slice(0, targetDim);
+  }
+
+  // Pad with zeros to reach target dimension
+  return [...embedding, ...Array(targetDim - embedding.length).fill(0)];
+}
+
+/**
  * Generate embeddings for an entity
  * Processes all entity images and description to create combined embeddings
  * Stores embeddings in Pinecone vector database
@@ -88,7 +109,7 @@ export async function generateEmbeddingsAction(
           imageUrls
         );
 
-        // Store each visual embedding
+        // Store each visual embedding (resize to 1024 dimensions to match Pinecone index)
         const visualVectors = visualEmbeddings.map((embedding, index) => {
           const visualId = `${entityId}-visual-${images[index].id}`;
           const visualMetadata: VectorMetadata = {
@@ -103,9 +124,12 @@ export async function generateEmbeddingsAction(
 
           embeddingIds.push(visualId);
 
+          // Resize embedding to 1024 dimensions (Pinecone index dimension)
+          const resizedEmbedding = resizeEmbedding(embedding, 1024);
+
           return {
             id: visualId,
-            values: embedding,
+            values: resizedEmbedding,
             metadata: visualMetadata,
           };
         });
@@ -124,7 +148,7 @@ export async function generateEmbeddingsAction(
           entity.description
         );
 
-        // Store semantic embedding
+        // Store semantic embedding (resize to 1024 dimensions to match Pinecone index)
         const semanticId = `${entityId}-semantic`;
         const semanticMetadata: VectorMetadata = {
           entityId: entity.id,
@@ -136,10 +160,13 @@ export async function generateEmbeddingsAction(
           createdAt: new Date().toISOString(),
         };
 
+        // Resize embedding to 1024 dimensions (Pinecone index dimension)
+        const resizedSemanticEmbedding = resizeEmbedding(semanticEmbedding, 1024);
+
         await vectorService.upsert([
           {
             id: semanticId,
-            values: semanticEmbedding,
+            values: resizedSemanticEmbedding,
             metadata: semanticMetadata,
           },
         ]);
