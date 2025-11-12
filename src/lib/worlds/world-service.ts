@@ -1,5 +1,5 @@
 import db from "../../../db/drizzle";
-import { worlds, entities, generations } from "../../../db/schema";
+import { worlds, entities, generations, entityImages } from "../../../db/schema";
 import { eq, and, desc, sql } from "drizzle-orm";
 import type {
   World,
@@ -185,7 +185,7 @@ export class WorldService {
       entityBreakdown[row.type as EntityType] = row.count;
     });
 
-    // Get recent entities (last 10)
+    // Get recent entities (last 10) with primary images
     const recentEntitiesRaw = await db
       .select()
       .from(entities)
@@ -193,11 +193,28 @@ export class WorldService {
       .orderBy(desc(entities.updatedAt))
       .limit(10);
 
-    const recentEntities = recentEntitiesRaw.map((entity) => ({
-      ...entity,
-      tags: entity.tags || [],
-      metadata: (entity.metadata as Record<string, unknown>) || {},
-    }));
+    // Fetch primary images for recent entities
+    const recentEntities = await Promise.all(
+      recentEntitiesRaw.map(async (entity) => {
+        const [primaryImage] = await db
+          .select()
+          .from(entityImages)
+          .where(
+            and(
+              eq(entityImages.entityId, entity.id),
+              eq(entityImages.isPrimary, true)
+            )
+          )
+          .limit(1);
+
+        return {
+          ...entity,
+          tags: entity.tags || [],
+          metadata: (entity.metadata as Record<string, unknown>) || {},
+          primaryImage: primaryImage || undefined,
+        };
+      })
+    );
 
     // Get recent generations (last 5)
     const recentGenerationsRaw = await db

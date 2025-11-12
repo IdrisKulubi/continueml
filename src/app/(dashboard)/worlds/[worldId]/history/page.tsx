@@ -47,9 +47,15 @@ async function HistoryContent({
   }
 
   // Get entities for filter dropdown
-  const entitiesWithImages = await entityService.getEntities(worldId, {
+  const entitiesRaw = await entityService.getEntities(worldId, {
     isArchived: false,
   });
+
+  // Map to ensure primaryImage is null instead of undefined
+  const entitiesWithImages = entitiesRaw.map((entity) => ({
+    ...entity,
+    primaryImage: entity.primaryImage || null,
+  }));
 
   // Parse filters from search params
   const page = parseInt(searchParams.page || "1", 10);

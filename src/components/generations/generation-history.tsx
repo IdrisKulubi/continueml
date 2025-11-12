@@ -2,7 +2,7 @@
 
 import { useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { Empty } from "@/components/ui/empty";
+import { Empty, EmptyHeader, EmptyMedia, EmptyTitle, EmptyDescription, EmptyContent } from "@/components/ui/empty";
 import { ChevronLeft, ChevronRight, History } from "lucide-react";
 import type { Generation } from "@/types";
 import GenerationCard from "./generation-card";
@@ -31,16 +31,22 @@ export default function GenerationHistory({
 
   if (generations.length === 0) {
     return (
-      <Empty
-        icon={History}
-        title="No generations yet"
-        description="Start generating content to see your history here"
-        action={
+      <Empty>
+        <EmptyHeader>
+          <EmptyMedia variant="icon">
+            <History />
+          </EmptyMedia>
+          <EmptyTitle>No generations yet</EmptyTitle>
+          <EmptyDescription>
+            Start generating content to see your history here
+          </EmptyDescription>
+        </EmptyHeader>
+        <EmptyContent>
           <Button onClick={() => router.push(`/worlds/${worldId}/generate`)}>
             Create Generation
           </Button>
-        }
-      />
+        </EmptyContent>
+      </Empty>
     );
   }
 

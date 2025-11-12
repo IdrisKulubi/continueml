@@ -409,7 +409,7 @@ export async function updateEntityMemoryAction(
     }
 
     // 4. Verify entity exists and is part of the generation
-    if (!generation.entityIds.includes(validatedInput.entityId)) {
+    if (!generation.entityIds || !generation.entityIds.includes(validatedInput.entityId)) {
       return {
         success: false,
         error: "Entity is not associated with this generation.",
@@ -519,7 +519,7 @@ export async function createVariantEntityAction(
     }
 
     // 4. Verify source entity exists and is part of the generation
-    if (!generation.entityIds.includes(validatedInput.sourceEntityId)) {
+    if (!generation.entityIds || !generation.entityIds.includes(validatedInput.sourceEntityId)) {
       return {
         success: false,
         error: "Source entity is not associated with this generation.",

@@ -132,7 +132,7 @@ export default function GenerationInterface({
         toast.success("Generation created successfully!");
         router.push(`/worlds/${worldId}/history`);
       } else {
-        toast.error(result.error?.message || "Failed to create generation");
+        toast.error("Failed to create generation");
       }
     } catch (error) {
       console.error("Error creating generation:", error);

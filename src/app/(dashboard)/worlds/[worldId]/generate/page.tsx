@@ -30,9 +30,15 @@ async function GenerateContent({ worldId }: { worldId: string }) {
   }
 
   // Get all entities for this world (for entity selector)
-  const entitiesWithImages = await entityService.getEntities(worldId, {
+  const entitiesRaw = await entityService.getEntities(worldId, {
     isArchived: false,
   });
+
+  // Map to ensure primaryImage is null instead of undefined
+  const entitiesWithImages = entitiesRaw.map((entity) => ({
+    ...entity,
+    primaryImage: entity.primaryImage || null,
+  }));
 
   // Fetch branches for selector
   const branchesResult = await getBranchesAction(worldId);

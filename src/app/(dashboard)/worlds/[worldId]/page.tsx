@@ -7,7 +7,11 @@ import { worldService } from "@/lib/worlds/world-service";
 import { getCurrentUserId } from "@/lib/auth/session";
 import { getBranchesAction } from "@/app/actions/branches";
 import { BranchSelector } from "@/components/branches/branch-selector";
-import { Layers, Plus, ArrowLeft, GitBranch } from "lucide-react";
+import { DashboardStats } from "@/components/worlds/dashboard-stats";
+import { EntityBreakdown } from "@/components/worlds/entity-breakdown";
+import { EntityCard } from "@/components/entities/entity-card";
+import GenerationCard from "@/components/generations/generation-card";
+import { Layers, Plus, ArrowLeft, Sparkles, Clock, TrendingUp } from "lucide-react";
 
 interface PageProps {
   params: Promise<{ worldId: string }>;
@@ -30,6 +34,12 @@ export default async function WorldDetailPage({ params }: PageProps) {
   // Fetch branches
   const branchesResult = await getBranchesAction(worldId);
   const branches = branchesResult.success ? branchesResult.data : [];
+
+  // Fetch world statistics
+  const stats = await worldService.getWorldStats(worldId, userId);
+  if (!stats) {
+    notFound();
+  }
 
   return (
     <div className="relative min-h-screen bg-linear-to-br from-gray-50 via-indigo-50/30 to-purple-50/30 dark:from-gray-950 dark:via-indigo-950/30 dark:to-purple-950/30">
@@ -87,76 +97,134 @@ export default async function WorldDetailPage({ params }: PageProps) {
         )}
       </div>
 
-      {/* Quick Actions */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <Link
-          href={`/worlds/${worldId}/entities`}
-          className="group bg-white dark:bg-gray-900 border border-indigo-200 dark:border-indigo-800/50 rounded-2xl p-8 hover:shadow-lg transition-all duration-300 hover:-translate-y-1"
-        >
-          <div className="flex items-center justify-between mb-4">
-            <div className="w-12 h-12 rounded-full bg-indigo-50 dark:bg-indigo-950/30 flex items-center justify-center">
-              <Layers className="w-6 h-6 text-indigo-600 dark:text-indigo-400" />
-            </div>
-            <Plus className="w-5 h-5 text-gray-400 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors" />
-          </div>
-          <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-2">
-            Entities
-          </h3>
-          <p className="text-gray-600 dark:text-gray-400">
-            Manage characters, locations, objects, and styles
-          </p>
-        </Link>
+      {/* Statistics Cards */}
+      <DashboardStats
+        entityCount={stats.entityCount}
+        generationCount={stats.generationCount}
+        lastActivity={stats.lastActivity}
+        worldId={worldId}
+      />
 
-        <Link
-          href={`/worlds/${worldId}/generate`}
-          className="group bg-white dark:bg-gray-900 border border-purple-200 dark:border-purple-800/50 rounded-2xl p-8 hover:shadow-lg transition-all duration-300 hover:-translate-y-1"
-        >
-          <div className="flex items-center justify-between mb-4">
-            <div className="w-12 h-12 rounded-full bg-purple-50 dark:bg-purple-950/30 flex items-center justify-center">
-              <span className="text-2xl">✨</span>
+      {/* Entity Breakdown and Quick Actions */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+        <div className="lg:col-span-1">
+          <EntityBreakdown breakdown={stats.entityBreakdown} worldId={worldId} />
+        </div>
+        
+        <div className="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6">
+          <Link
+            href={`/worlds/${worldId}/entities/new`}
+            className="group bg-white dark:bg-gray-900 border border-indigo-200 dark:border-indigo-800/50 rounded-2xl p-8 hover:shadow-lg transition-all duration-300 hover:-translate-y-1"
+          >
+            <div className="flex items-center justify-between mb-4">
+              <div className="w-12 h-12 rounded-full bg-indigo-50 dark:bg-indigo-950/30 flex items-center justify-center">
+                <Layers className="w-6 h-6 text-indigo-600 dark:text-indigo-400" />
+              </div>
+              <Plus className="w-5 h-5 text-gray-400 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors" />
             </div>
-            <Plus className="w-5 h-5 text-gray-400 group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors" />
-          </div>
-          <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-2">
-            Generate
-          </h3>
-          <p className="text-gray-600 dark:text-gray-400">
-            Create AI-generated content with prompt enhancement
-          </p>
-        </Link>
+            <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-2">
+              Create Entity
+            </h3>
+            <p className="text-gray-600 dark:text-gray-400">
+              Add characters, locations, objects, and styles
+            </p>
+          </Link>
 
-        <Link
-          href={`/worlds/${worldId}/branches`}
-          className="group bg-white dark:bg-gray-900 border border-pink-200 dark:border-pink-800/50 rounded-2xl p-8 hover:shadow-lg transition-all duration-300 hover:-translate-y-1"
-        >
-          <div className="flex items-center justify-between mb-4">
-            <div className="w-12 h-12 rounded-full bg-pink-50 dark:bg-pink-950/30 flex items-center justify-center">
-              <GitBranch className="w-6 h-6 text-pink-600 dark:text-pink-400" />
+          <Link
+            href={`/worlds/${worldId}/generate`}
+            className="group bg-white dark:bg-gray-900 border border-purple-200 dark:border-purple-800/50 rounded-2xl p-8 hover:shadow-lg transition-all duration-300 hover:-translate-y-1"
+          >
+            <div className="flex items-center justify-between mb-4">
+              <div className="w-12 h-12 rounded-full bg-purple-50 dark:bg-purple-950/30 flex items-center justify-center">
+                <Sparkles className="w-6 h-6 text-purple-600 dark:text-purple-400" />
+              </div>
+              <Plus className="w-5 h-5 text-gray-400 group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors" />
             </div>
-            <Plus className="w-5 h-5 text-gray-400 group-hover:text-pink-600 dark:group-hover:text-pink-400 transition-colors" />
-          </div>
-          <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-2">
-            Branches
-          </h3>
-          <p className="text-gray-600 dark:text-gray-400">
-            Manage alternate versions of your world
-          </p>
-        </Link>
+            <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-2">
+              Generate Content
+            </h3>
+            <p className="text-gray-600 dark:text-gray-400">
+              Create AI-generated content with prompt enhancement
+            </p>
+          </Link>
 
-        <div className="bg-gray-50 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-800 rounded-2xl p-8 opacity-50">
-          <div className="flex items-center justify-between mb-4">
-            <div className="w-12 h-12 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center">
-              <span className="text-2xl">📚</span>
+          <Link
+            href={`/worlds/${worldId}/entities`}
+            className="group bg-white dark:bg-gray-900 border border-green-200 dark:border-green-800/50 rounded-2xl p-8 hover:shadow-lg transition-all duration-300 hover:-translate-y-1"
+          >
+            <div className="flex items-center justify-between mb-4">
+              <div className="w-12 h-12 rounded-full bg-green-50 dark:bg-green-950/30 flex items-center justify-center">
+                <TrendingUp className="w-6 h-6 text-green-600 dark:text-green-400" />
+              </div>
             </div>
-          </div>
-          <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-2">
-            World Bible
-          </h3>
-          <p className="text-gray-600 dark:text-gray-400">
-            Coming soon
-          </p>
+            <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-2">
+              View All Entities
+            </h3>
+            <p className="text-gray-600 dark:text-gray-400">
+              Browse and manage all entities in this world
+            </p>
+          </Link>
+
+          <Link
+            href={`/worlds/${worldId}/history`}
+            className="group bg-white dark:bg-gray-900 border border-amber-200 dark:border-amber-800/50 rounded-2xl p-8 hover:shadow-lg transition-all duration-300 hover:-translate-y-1"
+          >
+            <div className="flex items-center justify-between mb-4">
+              <div className="w-12 h-12 rounded-full bg-amber-50 dark:bg-amber-950/30 flex items-center justify-center">
+                <Clock className="w-6 h-6 text-amber-600 dark:text-amber-400" />
+              </div>
+            </div>
+            <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-2">
+              View History
+            </h3>
+            <p className="text-gray-600 dark:text-gray-400">
+              See all past generations and their results
+            </p>
+          </Link>
         </div>
       </div>
+
+      {/* Recent Entities */}
+      {stats.recentEntities.length > 0 && (
+        <div className="mb-8">
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
+              Recent Entities
+            </h2>
+            <Button asChild variant="outline">
+              <Link href={`/worlds/${worldId}/entities`}>
+                View All
+              </Link>
+            </Button>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {stats.recentEntities.slice(0, 4).map((entity) => (
+              <EntityCard key={entity.id} entity={entity} worldId={worldId} />
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Recent Generations */}
+      {stats.recentGenerations.length > 0 && (
+        <div>
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
+              Recent Generations
+            </h2>
+            <Button asChild variant="outline">
+              <Link href={`/worlds/${worldId}/history`}>
+                View All
+              </Link>
+            </Button>
+          </div>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {stats.recentGenerations.slice(0, 4).map((generation) => (
+              <GenerationCard key={generation.id} generation={generation} worldId={worldId} />
+            ))}
+          </div>
+        </div>
+      )}
     </div>
     </div>
   );

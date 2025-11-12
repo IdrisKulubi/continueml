@@ -47,7 +47,7 @@ export default async function GenerationDetailPage({
         <div className="text-center py-12">
           <h2 className="text-2xl font-semibold mb-2">No Consistency Analysis Available</h2>
           <p className="text-muted-foreground">
-            This generation doesn't have consistency analysis yet.
+            This generation doesn&apos;t have consistency analysis yet.
             {!generation.resultUrl && " Please add a result URL first."}
           </p>
         </div>
@@ -58,18 +58,17 @@ export default async function GenerationDetailPage({
   // Fetch entities used in generation
   const entitiesWithImages = await Promise.all(
     generation.entityIds.map(async (entityId) => {
-      const entity = await entityService.getEntityById(entityId);
-      if (!entity) return null;
+      const result = await entityService.getEntityById(entityId);
+      if (!result) return null;
       
-      const images = await entityService.getEntityImages(entityId);
       return {
-        ...entity,
-        images,
+        ...result.entity,
+        images: result.images,
       };
     })
   );
 
-  const validEntities = entitiesWithImages.filter((e) => e !== null);
+  const validEntities = entitiesWithImages.filter((e): e is NonNullable<typeof e> => e !== null);
 
   // Perform consistency analysis if not already done
   let analysis;
