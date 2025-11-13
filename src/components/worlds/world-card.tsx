@@ -48,7 +48,7 @@ export function WorldCard({ world }: WorldCardProps) {
   return (
     <>
       <article
-        className="group relative bg-white dark:bg-gray-900 border border-indigo-200 dark:border-indigo-800/50 rounded-2xl p-6 cursor-pointer shadow-[0_8px_30px_rgba(0,0,0,0.08)] dark:shadow-[0_8px_30px_rgba(0,0,0,0.3)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_20px_40px_rgba(0,0,0,0.12)] dark:hover:shadow-[0_20px_40px_rgba(0,0,0,0.4)] hover:border-indigo-300 dark:hover:border-indigo-700"
+        className="group relative bg-white dark:bg-gray-900 border border-indigo-200 dark:border-indigo-800/50 rounded-2xl p-4 sm:p-6 cursor-pointer shadow-[0_8px_30px_rgba(0,0,0,0.08)] dark:shadow-[0_8px_30px_rgba(0,0,0,0.3)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_20px_40px_rgba(0,0,0,0.12)] dark:hover:shadow-[0_20px_40px_rgba(0,0,0,0.4)] hover:border-indigo-300 dark:hover:border-indigo-700 active:scale-[0.98] touch-manipulation"
         onClick={handleCardClick}
         role="button"
         tabIndex={0}
@@ -76,8 +76,8 @@ export function WorldCard({ world }: WorldCardProps) {
             <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>
               <Button 
                 variant="ghost" 
-                size="icon" 
-                className="h-8 w-8 ml-2 opacity-100 transition-opacity hover:bg-indigo-50 dark:hover:bg-indigo-950/30"
+                size="icon-sm" 
+                className="ml-2 opacity-100 transition-opacity hover:bg-indigo-50 dark:hover:bg-indigo-950/30"
                 aria-label={`Actions for ${world.name}`}
               >
                 <MoreVertical className="h-4 w-4 text-gray-600 dark:text-gray-400" aria-hidden="true" />

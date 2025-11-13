@@ -59,9 +59,9 @@ export default async function WorldDetailPage({ params }: PageProps) {
       <div className="absolute inset-0 bg-linear-to-b from-transparent via-white/50 to-white/80 dark:via-gray-950/50 dark:to-gray-950/80 pointer-events-none" />
       
       {/* Content */}
-      <div className="relative z-10 container mx-auto px-4 py-8 max-w-7xl">
+      <div className="relative z-10 container mx-auto px-4 py-6 sm:py-8 max-w-7xl">
         {/* Back Button */}
-        <Button asChild variant="ghost" className="mb-6">
+        <Button asChild variant="ghost" className="mb-4 sm:mb-6">
         <Link href="/worlds">
           <ArrowLeft className="w-4 h-4 mr-2" />
           Back to Worlds
@@ -69,19 +69,19 @@ export default async function WorldDetailPage({ params }: PageProps) {
       </Button>
 
       {/* Header */}
-      <div className="mb-8">
-        <div className="flex items-start justify-between mb-4">
+      <div className="mb-6 sm:mb-8">
+        <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-4">
           <div className="flex-1">
-            <h1 className="text-4xl font-bold text-gray-900 dark:text-gray-100 mb-3">
+            <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-gray-100 mb-3">
               {world.name}
             </h1>
             {world.description && (
-              <p className="text-lg text-gray-600 dark:text-gray-400 mb-4">
+              <p className="text-base sm:text-lg text-gray-600 dark:text-gray-400 mb-4">
                 {world.description}
               </p>
             )}
           </div>
-          <div className="flex items-center gap-3">
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
             <ExportWorldDialog worldId={worldId} worldName={world.name} />
             <BranchSelector worldId={worldId} branches={branches} />
           </div>
@@ -110,15 +110,15 @@ export default async function WorldDetailPage({ params }: PageProps) {
       />
 
       {/* Entity Breakdown and Quick Actions */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 mb-6 sm:mb-8">
         <div className="lg:col-span-1">
           <EntityBreakdown breakdown={stats.entityBreakdown} worldId={worldId} />
         </div>
         
-        <div className="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
           <Link
             href={`/worlds/${worldId}/entities/new`}
-            className="group bg-white dark:bg-gray-900 border border-indigo-200 dark:border-indigo-800/50 rounded-2xl p-8 hover:shadow-lg transition-all duration-300 hover:-translate-y-1"
+            className="group bg-white dark:bg-gray-900 border border-indigo-200 dark:border-indigo-800/50 rounded-2xl p-6 sm:p-8 hover:shadow-lg transition-all duration-300 hover:-translate-y-1 active:scale-[0.98] touch-manipulation"
           >
             <div className="flex items-center justify-between mb-4">
               <div className="w-12 h-12 rounded-full bg-indigo-50 dark:bg-indigo-950/30 flex items-center justify-center">
@@ -136,7 +136,7 @@ export default async function WorldDetailPage({ params }: PageProps) {
 
           <Link
             href={`/worlds/${worldId}/generate`}
-            className="group bg-white dark:bg-gray-900 border border-purple-200 dark:border-purple-800/50 rounded-2xl p-8 hover:shadow-lg transition-all duration-300 hover:-translate-y-1"
+            className="group bg-white dark:bg-gray-900 border border-purple-200 dark:border-purple-800/50 rounded-2xl p-6 sm:p-8 hover:shadow-lg transition-all duration-300 hover:-translate-y-1 active:scale-[0.98] touch-manipulation"
           >
             <div className="flex items-center justify-between mb-4">
               <div className="w-12 h-12 rounded-full bg-purple-50 dark:bg-purple-950/30 flex items-center justify-center">
@@ -154,7 +154,7 @@ export default async function WorldDetailPage({ params }: PageProps) {
 
           <Link
             href={`/worlds/${worldId}/entities`}
-            className="group bg-white dark:bg-gray-900 border border-green-200 dark:border-green-800/50 rounded-2xl p-8 hover:shadow-lg transition-all duration-300 hover:-translate-y-1"
+            className="group bg-white dark:bg-gray-900 border border-green-200 dark:border-green-800/50 rounded-2xl p-6 sm:p-8 hover:shadow-lg transition-all duration-300 hover:-translate-y-1 active:scale-[0.98] touch-manipulation"
           >
             <div className="flex items-center justify-between mb-4">
               <div className="w-12 h-12 rounded-full bg-green-50 dark:bg-green-950/30 flex items-center justify-center">
@@ -171,7 +171,7 @@ export default async function WorldDetailPage({ params }: PageProps) {
 
           <Link
             href={`/worlds/${worldId}/history`}
-            className="group bg-white dark:bg-gray-900 border border-amber-200 dark:border-amber-800/50 rounded-2xl p-8 hover:shadow-lg transition-all duration-300 hover:-translate-y-1"
+            className="group bg-white dark:bg-gray-900 border border-amber-200 dark:border-amber-800/50 rounded-2xl p-6 sm:p-8 hover:shadow-lg transition-all duration-300 hover:-translate-y-1 active:scale-[0.98] touch-manipulation"
           >
             <div className="flex items-center justify-between mb-4">
               <div className="w-12 h-12 rounded-full bg-amber-50 dark:bg-amber-950/30 flex items-center justify-center">
@@ -190,18 +190,18 @@ export default async function WorldDetailPage({ params }: PageProps) {
 
       {/* Recent Entities */}
       {stats.recentEntities.length > 0 && (
-        <div className="mb-8">
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
+        <div className="mb-6 sm:mb-8">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4 sm:mb-6">
+            <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-100">
               Recent Entities
             </h2>
-            <Button asChild variant="outline">
+            <Button asChild variant="outline" className="w-full sm:w-auto">
               <Link href={`/worlds/${worldId}/entities`}>
                 View All
               </Link>
             </Button>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
             {stats.recentEntities.slice(0, 4).map((entity) => (
               <EntityCard key={entity.id} entity={entity} worldId={worldId} />
             ))}
@@ -212,17 +212,17 @@ export default async function WorldDetailPage({ params }: PageProps) {
       {/* Recent Generations */}
       {stats.recentGenerations.length > 0 && (
         <div>
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4 sm:mb-6">
+            <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-100">
               Recent Generations
             </h2>
-            <Button asChild variant="outline">
+            <Button asChild variant="outline" className="w-full sm:w-auto">
               <Link href={`/worlds/${worldId}/history`}>
                 View All
               </Link>
             </Button>
           </div>
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
             {stats.recentGenerations.slice(0, 4).map((generation) => (
               <GenerationCard key={generation.id} generation={generation} worldId={worldId} />
             ))}

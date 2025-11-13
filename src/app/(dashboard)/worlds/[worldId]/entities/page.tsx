@@ -58,9 +58,9 @@ export default async function EntitiesPage({ params, searchParams }: PageProps) 
       <div className="absolute inset-0 bg-linear-to-b from-transparent via-white/50 to-white/80 dark:via-gray-950/50 dark:to-gray-950/80 pointer-events-none" />
       
       {/* Content */}
-      <div className="relative z-10 container mx-auto px-4 py-8 max-w-7xl">
+      <div className="relative z-10 container mx-auto px-4 py-6 sm:py-8 max-w-7xl">
         {/* Back Button */}
-        <Button asChild variant="ghost" className="mb-6">
+        <Button asChild variant="ghost" className="mb-4 sm:mb-6">
           <Link href={`/worlds/${worldId}`}>
             <ArrowLeft className="w-4 h-4 mr-2" />
             Back to World
@@ -68,18 +68,18 @@ export default async function EntitiesPage({ params, searchParams }: PageProps) 
         </Button>
 
         {/* Header */}
-        <div className="flex items-center justify-between mb-8">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6 sm:mb-8">
           <div className="flex-1">
-            <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-2">
+            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-gray-100 mb-2">
               Entities
             </h1>
-            <p className="text-gray-600 dark:text-gray-400">
+            <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400">
               Manage characters, locations, objects, and styles for your world
             </p>
           </div>
-          <div className="flex items-center gap-3">
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
             <BranchSelector worldId={worldId} branches={branches} />
-            <Button asChild>
+            <Button asChild className="w-full sm:w-auto">
               <Link href={`/worlds/${worldId}/entities/new`}>
                 <Plus className="w-4 h-4 mr-2" />
                 Create Entity

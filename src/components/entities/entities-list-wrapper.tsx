@@ -53,9 +53,9 @@ export function EntitiesListWrapper({ worldId, searchParams }: EntitiesListWrapp
 
   if (loading) {
     return (
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
         {Array.from({ length: 6 }).map((_, i) => (
-          <div key={i} className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl p-6">
+          <div key={i} className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl p-4 sm:p-6">
             <Skeleton className="w-full h-48 mb-4 rounded-lg" />
             <Skeleton className="h-6 w-3/4 mb-2" />
             <Skeleton className="h-4 w-full mb-2" />
@@ -103,7 +103,7 @@ export function EntitiesListWrapper({ worldId, searchParams }: EntitiesListWrapp
   }
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
       {entities.map((entity) => (
         <EntityCard key={entity.id} entity={entity} worldId={worldId} />
       ))}

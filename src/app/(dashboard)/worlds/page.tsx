@@ -41,7 +41,7 @@ async function WorldsList() {
   }
 
   return (
-    <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+    <div className="grid gap-4 sm:gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
       {worlds.map((world) => (
         <WorldCard key={world.id} world={world} />
       ))}
@@ -51,9 +51,9 @@ async function WorldsList() {
 
 function WorldsListSkeleton() {
   return (
-    <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+    <div className="grid gap-4 sm:gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
       {Array.from({ length: 6 }).map((_, i) => (
-        <div key={i} className="rounded-2xl border border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-900 p-6 shadow-sm">
+        <div key={i} className="rounded-2xl border border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-900 p-4 sm:p-6 shadow-sm">
           <Skeleton className="h-7 w-3/4 mb-4 rounded-md" />
           <Skeleton className="h-4 w-full mb-2 rounded-md" />
           <Skeleton className="h-4 w-5/6 mb-6 rounded-md" />
@@ -85,16 +85,16 @@ export default function WorldsPage() {
       <div className="absolute inset-0 bg-linear-to-b from-transparent via-white/50 to-white/80 dark:via-gray-950/50 dark:to-gray-950/80 pointer-events-none" />
       
       {/* Content */}
-      <div className="relative z-10 container max-w-7xl mx-auto py-10 px-6">
-        <div className="flex items-center justify-between mb-10">
+      <div className="relative z-10 container max-w-7xl mx-auto py-6 sm:py-10 px-4 sm:px-6">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6 sm:mb-10">
           <div>
-            <h1 className="text-4xl font-bold text-gray-900 dark:text-gray-100 mb-2">Worlds</h1>
-            <p className="text-gray-500 dark:text-gray-400 text-base">
+            <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-gray-100 mb-2">Worlds</h1>
+            <p className="text-gray-500 dark:text-gray-400 text-sm sm:text-base">
               Manage your creative worlds and projects
             </p>
           </div>
           <CreateWorldDialog>
-            <Button className="bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-600 text-white font-medium px-5 py-2.5 rounded-lg shadow-sm hover:shadow-md transition-all duration-200 hover:-translate-y-0.5">
+            <Button className="bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-600 text-white font-medium px-5 py-2.5 rounded-lg shadow-sm hover:shadow-md transition-all duration-200 hover:-translate-y-0.5 w-full sm:w-auto">
               <Plus className="mr-2 h-5 w-5" />
               Create World
             </Button>

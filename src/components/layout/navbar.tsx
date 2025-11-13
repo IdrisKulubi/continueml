@@ -41,9 +41,9 @@ export function Navbar() {
       className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60"
       aria-label="Main navigation"
     >
-      <div className="container flex h-16 items-center justify-between px-4">
+      <div className="container flex h-14 sm:h-16 items-center justify-between px-4">
         {/* Logo and App Name */}
-        <div className="flex items-center gap-6">
+        <div className="flex items-center gap-4 sm:gap-6">
           <Link 
             href="/" 
             className="flex items-center gap-2 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring rounded-md"
@@ -54,11 +54,11 @@ export function Navbar() {
               alt=""
               width={32}
               height={32}
-              className="h-8 w-8 rounded-lg"
+              className="h-7 w-7 sm:h-8 sm:w-8 rounded-lg"
               priority
               role="presentation"
             />
-            <span className="text-xl font-semibold">continueml</span>
+            <span className="text-lg sm:text-xl font-semibold">continueml</span>
           </Link>
 
           {/* Desktop Navigation */}

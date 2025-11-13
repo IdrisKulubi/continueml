@@ -131,7 +131,7 @@ export function EntityCard({ entity, worldId }: EntityCardProps) {
   return (
     <>
       <article
-        className={`group relative bg-white dark:bg-gray-900 border ${config.borderColor} rounded-2xl overflow-hidden cursor-pointer shadow-[0_8px_30px_rgba(0,0,0,0.08)] dark:shadow-[0_8px_30px_rgba(0,0,0,0.3)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_20px_40px_rgba(0,0,0,0.12)] dark:hover:shadow-[0_20px_40px_rgba(0,0,0,0.4)]`}
+        className={`group relative bg-white dark:bg-gray-900 border ${config.borderColor} rounded-2xl overflow-hidden cursor-pointer shadow-[0_8px_30px_rgba(0,0,0,0.08)] dark:shadow-[0_8px_30px_rgba(0,0,0,0.3)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_20px_40px_rgba(0,0,0,0.12)] dark:hover:shadow-[0_20px_40px_rgba(0,0,0,0.4)] active:scale-[0.98] touch-manipulation`}
         onClick={handleCardClick}
         role="button"
         tabIndex={0}
@@ -174,8 +174,8 @@ export function EntityCard({ entity, worldId }: EntityCardProps) {
               <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>
                 <Button
                   variant="ghost"
-                  size="icon"
-                  className="h-8 w-8 bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm hover:bg-white dark:hover:bg-gray-900"
+                  size="icon-sm"
+                  className="bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm hover:bg-white dark:hover:bg-gray-900"
                   aria-label={`Actions for ${entity.name}`}
                 >
                   <MoreVertical className="h-4 w-4 text-gray-600 dark:text-gray-400" aria-hidden="true" />
@@ -218,9 +218,9 @@ export function EntityCard({ entity, worldId }: EntityCardProps) {
         </div>
 
         {/* Content */}
-        <div className="p-5">
+        <div className="p-4 sm:p-5">
           {/* Entity Name */}
-          <h3 className={`text-lg font-semibold ${config.textColor} mb-2 truncate group-hover:text-opacity-80 transition-colors`}>
+          <h3 className={`text-base sm:text-lg font-semibold ${config.textColor} mb-2 truncate group-hover:text-opacity-80 transition-colors`}>
             {entity.name}
           </h3>
 

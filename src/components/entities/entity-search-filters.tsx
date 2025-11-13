@@ -109,7 +109,7 @@ export function EntitySearchFilters({ worldId }: EntitySearchFiltersProps) {
           {searchQuery && (
             <button
               onClick={() => handleSearchChange("")}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 p-1 min-w-[44px] min-h-[44px] sm:min-w-0 sm:min-h-0 sm:p-0 flex items-center justify-center touch-manipulation"
               aria-label="Clear search"
             >
               <X className="h-4 w-4" aria-hidden="true" />
@@ -156,7 +156,7 @@ export function EntitySearchFilters({ worldId }: EntitySearchFiltersProps) {
               Search: {searchQuery}
               <button
                 onClick={() => handleSearchChange("")}
-                className="ml-1 hover:text-gray-900 dark:hover:text-gray-100"
+                className="ml-1 hover:text-gray-900 dark:hover:text-gray-100 p-1 -m-1 min-w-[44px] min-h-[44px] sm:min-w-0 sm:min-h-0 sm:p-0 sm:m-0 flex items-center justify-center touch-manipulation"
                 aria-label="Remove search filter"
               >
                 <X className="h-3 w-3" aria-hidden="true" />
@@ -169,7 +169,7 @@ export function EntitySearchFilters({ worldId }: EntitySearchFiltersProps) {
               Type: {entityTypes.find((t) => t.value === selectedType)?.label}
               <button
                 onClick={() => handleTypeChange("all")}
-                className="ml-1 hover:text-gray-900 dark:hover:text-gray-100"
+                className="ml-1 hover:text-gray-900 dark:hover:text-gray-100 p-1 -m-1 min-w-[44px] min-h-[44px] sm:min-w-0 sm:min-h-0 sm:p-0 sm:m-0 flex items-center justify-center touch-manipulation"
                 aria-label="Remove type filter"
               >
                 <X className="h-3 w-3" aria-hidden="true" />
@@ -182,7 +182,7 @@ export function EntitySearchFilters({ worldId }: EntitySearchFiltersProps) {
               Tag: {tag}
               <button
                 onClick={() => setSelectedTags(selectedTags.filter((t) => t !== tag))}
-                className="ml-1 hover:text-gray-900 dark:hover:text-gray-100"
+                className="ml-1 hover:text-gray-900 dark:hover:text-gray-100 p-1 -m-1 min-w-[44px] min-h-[44px] sm:min-w-0 sm:min-h-0 sm:p-0 sm:m-0 flex items-center justify-center touch-manipulation"
                 aria-label={`Remove ${tag} tag filter`}
               >
                 <X className="h-3 w-3" aria-hidden="true" />
