@@ -57,7 +57,7 @@ export default function PromptEnhancementPreview({
       );
       highlighted = highlighted.replace(
         regex,
-        `<mark class="entity-highlight-enhanced" data-entity-id="${entity.id}">$&</mark>`
+        (match) => `<mark class="entity-highlight-enhanced" data-entity-id="${entity.id}">${match}</mark>`
       );
     });
 
@@ -141,12 +141,16 @@ export default function PromptEnhancementPreview({
                 )}
               >
                 <div className="flex items-start gap-3">
-                  {entity.primaryImage && (
-                    <Image
-                      src={entity.primaryImage.url}
-                      alt={`${entity.name} ${entity.type} entity thumbnail`}
-                      className="w-16 h-16 rounded object-cover shrink-0"
-                    />
+                  {entity.primaryImage?.url && (
+                    <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded">
+                      <Image
+                        src={entity.primaryImage.url}
+                        alt={`${entity.name} thumbnail`}
+                        fill
+                        className="object-cover"
+                        sizes="64px"
+                      />
+                    </div>
                   )}
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 mb-1">

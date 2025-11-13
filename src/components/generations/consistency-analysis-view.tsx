@@ -210,16 +210,22 @@ export default function ConsistencyAnalysisView({
                 <h4 className="text-sm font-medium">Generated Content</h4>
                 <Badge variant="outline">Result</Badge>
               </div>
-              <div className="relative aspect-video rounded-lg overflow-hidden bg-muted border">
-                <Image
-                  src={generatedContentUrl}
-                  alt="Generated content being analyzed for consistency with entity references"
-                  fill
-                  className="object-cover"
-                  sizes="(max-width: 768px) 100vw, 50vw"
-                  loading="lazy"
-                />
-              </div>
+              {generatedContentUrl && generatedContentUrl.startsWith('http') ? (
+                <div className="relative aspect-video rounded-lg overflow-hidden bg-muted border">
+                  <Image
+                    src={generatedContentUrl}
+                    alt="Generated content being analyzed for consistency with entity references"
+                    fill
+                    className="object-cover"
+                    sizes="(max-width: 768px) 100vw, 50vw"
+                    loading="lazy"
+                  />
+                </div>
+              ) : (
+                <div className="relative aspect-video rounded-lg overflow-hidden bg-muted border flex items-center justify-center">
+                  <p className="text-sm text-muted-foreground">No valid image URL</p>
+                </div>
+              )}
             </div>
 
             {/* Reference Entities */}
@@ -233,7 +239,7 @@ export default function ConsistencyAnalysisView({
                   const primaryImage = entity.images.find((img) => img.isPrimary) || entity.images[0];
                   return (
                     <div key={entity.id} className="space-y-1">
-                      {primaryImage && (
+                      {primaryImage?.url && (
                         <div className="relative aspect-square rounded-md overflow-hidden bg-muted border">
                           <Image
                             src={primaryImage.url}

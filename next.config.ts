@@ -15,6 +15,10 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "**.r2.dev",
       },
+      {
+        protocol: "https",
+        hostname: "replicate.delivery",
+      },
     ],
     // Image optimization settings
     formats: ["image/webp", "image/avif"], // Modern formats for better compression

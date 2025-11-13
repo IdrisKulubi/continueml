@@ -6,6 +6,7 @@ import { Empty, EmptyHeader, EmptyMedia, EmptyTitle, EmptyDescription, EmptyCont
 import { ChevronLeft, ChevronRight, History } from "lucide-react";
 import type { Generation } from "@/types";
 import GenerationCard from "./generation-card";
+import { useQueueProcessor } from "@/hooks/use-queue-processor";
 
 interface GenerationHistoryProps {
   generations: Generation[];
@@ -22,6 +23,10 @@ export default function GenerationHistory({
 }: GenerationHistoryProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
+  
+  // Auto-process queue when there are queued generations
+  const hasQueuedGenerations = generations.some(g => g.status === "queued");
+  useQueueProcessor(hasQueuedGenerations);
 
   const goToPage = (page: number) => {
     const params = new URLSearchParams(searchParams.toString());

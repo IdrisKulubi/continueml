@@ -1,10 +1,12 @@
 "use client";
 
+import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { X } from "lucide-react";
+import { X, Play, Loader2 } from "lucide-react";
+import { toast } from "sonner";
 import type { Entity, EntityImage, GenerationTool, GenerationStatus } from "@/types";
 
 interface EntityWithImage extends Entity {
@@ -42,6 +44,7 @@ export default function GenerationFilters({
 }: GenerationFiltersProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const [isProcessing, setIsProcessing] = useState(false);
 
   const updateFilter = (key: string, value: string | undefined) => {
     const params = new URLSearchParams(searchParams.toString());
@@ -64,6 +67,32 @@ export default function GenerationFilters({
 
   const hasActiveFilters =
     currentFilters.entityId || currentFilters.tool || currentFilters.status;
+
+  const handleProcessQueue = async () => {
+    setIsProcessing(true);
+    try {
+      const response = await fetch("/api/generations/process-queue", {
+        method: "POST",
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        if (data.processedCount > 0) {
+          toast.success(`Processing ${data.processedCount} generation(s)`);
+          router.refresh();
+        } else {
+          toast.info("No queued generations to process");
+        }
+      } else {
+        toast.error("Failed to process queue");
+      }
+    } catch (error) {
+      console.error("Error processing queue:", error);
+      toast.error("An error occurred");
+    } finally {
+      setIsProcessing(false);
+    }
+  };
 
   return (
     <Card className="p-4">
@@ -133,6 +162,26 @@ export default function GenerationFilters({
             </SelectContent>
           </Select>
         </div>
+
+        {/* Process Queue Button */}
+        <Button
+          variant="default"
+          onClick={handleProcessQueue}
+          disabled={isProcessing}
+          className="gap-2"
+        >
+          {isProcessing ? (
+            <>
+              <Loader2 className="h-4 w-4 animate-spin" />
+              Processing...
+            </>
+          ) : (
+            <>
+              <Play className="h-4 w-4" />
+              Process Queue
+            </>
+          )}
+        </Button>
 
         {/* Clear Filters Button */}
         {hasActiveFilters && (

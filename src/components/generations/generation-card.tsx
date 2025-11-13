@@ -151,7 +151,7 @@ export default function GenerationCard({ generation, worldId }: GenerationCardPr
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
-                {generation.consistencyScore !== null && generation.resultUrl && (
+                {generation.consistencyScore !== null && generation.resultUrl && generation.resultUrl.startsWith('http') && (
                   <DropdownMenuItem
                     onClick={() => router.push(`/worlds/${worldId}/history/${generation.id}`)}
                   >
@@ -165,7 +165,7 @@ export default function GenerationCard({ generation, worldId }: GenerationCardPr
                     Retry
                   </DropdownMenuItem>
                 )}
-                {generation.resultUrl && (
+                {generation.resultUrl && generation.resultUrl.startsWith('http') && (
                   <DropdownMenuItem asChild>
                     <a href={generation.resultUrl} target="_blank" rel="noopener noreferrer">
                       <ExternalLink className="h-4 w-4 mr-2" aria-hidden="true" />
@@ -187,7 +187,9 @@ export default function GenerationCard({ generation, worldId }: GenerationCardPr
 
         <CardContent className="space-y-4">
           {/* Result Thumbnail */}
-          {generation.resultUrl && generation.status === "completed" && (
+          {generation.resultUrl && 
+           generation.status === "completed" && 
+           generation.resultUrl.startsWith('http') && (
             <div className="relative aspect-video rounded-md overflow-hidden bg-muted">
               <Image
                 src={generation.resultUrl}
