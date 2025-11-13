@@ -137,7 +137,7 @@ export default function GenerationCard({ generation, worldId }: GenerationCardPr
                 )}
               </div>
               <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                <Clock className="h-3 w-3" />
+                <Clock className="h-3 w-3" aria-hidden="true" />
                 <span>{formatDate(generation.createdAt)}</span>
               </div>
             </div>
@@ -145,8 +145,9 @@ export default function GenerationCard({ generation, worldId }: GenerationCardPr
             {/* Actions Menu */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
-                  <MoreVertical className="h-4 w-4" />
+                <Button variant="ghost" size="sm" className="h-8 w-8 p-0" aria-label="Generation actions">
+                  <MoreVertical className="h-4 w-4" aria-hidden="true" />
+                  <span className="sr-only">Open menu</span>
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
@@ -154,20 +155,20 @@ export default function GenerationCard({ generation, worldId }: GenerationCardPr
                   <DropdownMenuItem
                     onClick={() => router.push(`/worlds/${worldId}/history/${generation.id}`)}
                   >
-                    <Sparkles className="h-4 w-4 mr-2" />
+                    <Sparkles className="h-4 w-4 mr-2" aria-hidden="true" />
                     View Analysis
                   </DropdownMenuItem>
                 )}
                 {generation.status === "failed" && (
                   <DropdownMenuItem onClick={handleRetry} disabled={isRetrying}>
-                    <RefreshCw className="h-4 w-4 mr-2" />
+                    <RefreshCw className="h-4 w-4 mr-2" aria-hidden="true" />
                     Retry
                   </DropdownMenuItem>
                 )}
                 {generation.resultUrl && (
                   <DropdownMenuItem asChild>
                     <a href={generation.resultUrl} target="_blank" rel="noopener noreferrer">
-                      <ExternalLink className="h-4 w-4 mr-2" />
+                      <ExternalLink className="h-4 w-4 mr-2" aria-hidden="true" />
                       View Result
                     </a>
                   </DropdownMenuItem>
@@ -176,7 +177,7 @@ export default function GenerationCard({ generation, worldId }: GenerationCardPr
                   onClick={() => setShowDeleteDialog(true)}
                   className="text-destructive"
                 >
-                  <Trash2 className="h-4 w-4 mr-2" />
+                  <Trash2 className="h-4 w-4 mr-2" aria-hidden="true" />
                   Delete
                 </DropdownMenuItem>
               </DropdownMenuContent>
@@ -190,7 +191,7 @@ export default function GenerationCard({ generation, worldId }: GenerationCardPr
             <div className="relative aspect-video rounded-md overflow-hidden bg-muted">
               <img
                 src={generation.resultUrl}
-                alt="Generated content"
+                alt={`Generated content from prompt: ${generation.originalPrompt.slice(0, 100)}${generation.originalPrompt.length > 100 ? '...' : ''}`}
                 className="object-cover w-full h-full"
               />
             </div>
@@ -217,7 +218,7 @@ export default function GenerationCard({ generation, worldId }: GenerationCardPr
                 <Separator />
                 <div className="space-y-1">
                   <div className="flex items-center gap-2">
-                    <Sparkles className="h-3 w-3 text-primary" />
+                    <Sparkles className="h-3 w-3 text-primary" aria-hidden="true" />
                     <h4 className="text-sm font-medium">Enhanced Prompt</h4>
                     <Badge variant="outline" className="text-xs">
                       {generation.enhancedPrompt.length} chars

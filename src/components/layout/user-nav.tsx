@@ -40,10 +40,16 @@ export function UserNav() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" className="relative h-10 w-10 rounded-full">
+        <Button 
+          variant="ghost" 
+          className="relative h-10 w-10 rounded-full"
+          aria-label={`User menu for ${user.name || user.email}`}
+        >
           <Avatar className="h-10 w-10">
-            <AvatarImage src={user.image || undefined} alt={user.name || "User"} />
-            <AvatarFallback>{initials}</AvatarFallback>
+            <AvatarImage src={user.image || undefined} alt="" />
+            <AvatarFallback aria-label={`${user.name || user.email} avatar`}>
+              {initials}
+            </AvatarFallback>
           </Avatar>
         </Button>
       </DropdownMenuTrigger>
@@ -58,16 +64,16 @@ export function UserNav() {
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuItem disabled>
-          <User className="mr-2 h-4 w-4" />
+          <User className="mr-2 h-4 w-4" aria-hidden="true" />
           <span>Profile</span>
         </DropdownMenuItem>
         <DropdownMenuItem disabled>
-          <Settings className="mr-2 h-4 w-4" />
+          <Settings className="mr-2 h-4 w-4" aria-hidden="true" />
           <span>Settings</span>
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={handleSignOut}>
-          <LogOut className="mr-2 h-4 w-4" />
+          <LogOut className="mr-2 h-4 w-4" aria-hidden="true" />
           <span>Sign out</span>
         </DropdownMenuItem>
       </DropdownMenuContent>

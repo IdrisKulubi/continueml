@@ -128,16 +128,25 @@ export function EntityCard({ entity, worldId }: EntityCardProps) {
 
   return (
     <>
-      <div
+      <article
         className={`group relative bg-white dark:bg-gray-900 border ${config.borderColor} rounded-2xl overflow-hidden cursor-pointer shadow-[0_8px_30px_rgba(0,0,0,0.08)] dark:shadow-[0_8px_30px_rgba(0,0,0,0.3)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_20px_40px_rgba(0,0,0,0.12)] dark:hover:shadow-[0_20px_40px_rgba(0,0,0,0.4)]`}
         onClick={handleCardClick}
+        role="button"
+        tabIndex={0}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            handleCardClick();
+          }
+        }}
+        aria-label={`${entity.name}, ${config.label} entity, used ${entity.usageCount} times`}
       >
         {/* Primary Image */}
         <div className="relative w-full h-48 bg-linear-to-br from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-900 overflow-hidden">
           {entity.primaryImage ? (
             <Image
               src={entity.primaryImage.url}
-              alt={entity.name}
+              alt={`${entity.name} reference image`}
               fill
               className="object-contain p-2"
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
@@ -145,14 +154,14 @@ export function EntityCard({ entity, worldId }: EntityCardProps) {
             />
           ) : (
             <div className={`w-full h-full flex items-center justify-center ${config.bgColor}`}>
-              <Icon className={`w-16 h-16 ${config.textColor} opacity-50`} />
+              <Icon className={`w-16 h-16 ${config.textColor} opacity-50`} aria-hidden="true" />
             </div>
           )}
 
           {/* Entity Type Badge */}
           <div className="absolute top-3 left-3">
-            <Badge className={`${config.color} text-white border-0 px-3 py-1`}>
-              <Icon className="w-3 h-3 mr-1" />
+            <Badge className={`${config.color} text-white border-0 px-3 py-1`} aria-label={`Entity type: ${config.label}`}>
+              <Icon className="w-3 h-3 mr-1" aria-hidden="true" />
               {config.label}
             </Badge>
           </div>
@@ -165,8 +174,9 @@ export function EntityCard({ entity, worldId }: EntityCardProps) {
                   variant="ghost"
                   size="icon"
                   className="h-8 w-8 bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm hover:bg-white dark:hover:bg-gray-900"
+                  aria-label={`Actions for ${entity.name}`}
                 >
-                  <MoreVertical className="h-4 w-4 text-gray-600 dark:text-gray-400" />
+                  <MoreVertical className="h-4 w-4 text-gray-600 dark:text-gray-400" aria-hidden="true" />
                   <span className="sr-only">Open menu</span>
                 </Button>
               </DropdownMenuTrigger>
@@ -175,11 +185,11 @@ export function EntityCard({ entity, worldId }: EntityCardProps) {
                 className="w-48 rounded-lg shadow-lg border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900"
               >
                 <DropdownMenuItem onClick={handleView} className="cursor-pointer py-2.5">
-                  <Eye className="mr-2 h-4 w-4 text-gray-600 dark:text-gray-400" />
+                  <Eye className="mr-2 h-4 w-4 text-gray-600 dark:text-gray-400" aria-hidden="true" />
                   <span className="text-sm font-medium">View</span>
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={handleEdit} className="cursor-pointer py-2.5">
-                  <Edit className="mr-2 h-4 w-4 text-gray-600 dark:text-gray-400" />
+                  <Edit className="mr-2 h-4 w-4 text-gray-600 dark:text-gray-400" aria-hidden="true" />
                   <span className="text-sm font-medium">Edit</span>
                 </DropdownMenuItem>
                 <DropdownMenuItem
@@ -187,7 +197,7 @@ export function EntityCard({ entity, worldId }: EntityCardProps) {
                   disabled={isDuplicating}
                   className="cursor-pointer py-2.5"
                 >
-                  <Copy className="mr-2 h-4 w-4 text-gray-600 dark:text-gray-400" />
+                  <Copy className="mr-2 h-4 w-4 text-gray-600 dark:text-gray-400" aria-hidden="true" />
                   <span className="text-sm font-medium">
                     {isDuplicating ? "Duplicating..." : "Duplicate"}
                   </span>
@@ -197,7 +207,7 @@ export function EntityCard({ entity, worldId }: EntityCardProps) {
                   onClick={handleDelete}
                   className="cursor-pointer py-2.5 text-red-600 dark:text-red-400 focus:text-red-600 dark:focus:text-red-400 focus:bg-red-50 dark:focus:bg-red-950/30"
                 >
-                  <Trash2 className="mr-2 h-4 w-4" />
+                  <Trash2 className="mr-2 h-4 w-4" aria-hidden="true" />
                   <span className="text-sm font-medium">Delete</span>
                 </DropdownMenuItem>
               </DropdownMenuContent>
@@ -233,11 +243,11 @@ export function EntityCard({ entity, worldId }: EntityCardProps) {
 
           {/* Usage Count */}
           <div className="flex items-center gap-1.5 text-sm text-gray-500 dark:text-gray-400">
-            <TrendingUp className="h-4 w-4" strokeWidth={2} />
+            <TrendingUp className="h-4 w-4" strokeWidth={2} aria-hidden="true" />
             <span className="font-medium">Used {entity.usageCount} times</span>
           </div>
         </div>
-      </div>
+      </article>
 
       <DeleteEntityDialog
         entity={entity}

@@ -47,9 +47,18 @@ export function WorldCard({ world }: WorldCardProps) {
 
   return (
     <>
-      <div
+      <article
         className="group relative bg-white dark:bg-gray-900 border border-indigo-200 dark:border-indigo-800/50 rounded-2xl p-6 cursor-pointer shadow-[0_8px_30px_rgba(0,0,0,0.08)] dark:shadow-[0_8px_30px_rgba(0,0,0,0.3)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_20px_40px_rgba(0,0,0,0.12)] dark:hover:shadow-[0_20px_40px_rgba(0,0,0,0.4)] hover:border-indigo-300 dark:hover:border-indigo-700"
         onClick={handleCardClick}
+        role="button"
+        tabIndex={0}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            handleCardClick();
+          }
+        }}
+        aria-label={`${world.name} world, last updated ${formatDistanceToNow(new Date(world.updatedAt), { addSuffix: true })}`}
       >
         {/* Header */}
         <div className="flex items-start justify-between mb-4">
@@ -69,23 +78,24 @@ export function WorldCard({ world }: WorldCardProps) {
                 variant="ghost" 
                 size="icon" 
                 className="h-8 w-8 ml-2 opacity-100 transition-opacity hover:bg-indigo-50 dark:hover:bg-indigo-950/30"
+                aria-label={`Actions for ${world.name}`}
               >
-                <MoreVertical className="h-4 w-4 text-gray-600 dark:text-gray-400" />
+                <MoreVertical className="h-4 w-4 text-gray-600 dark:text-gray-400" aria-hidden="true" />
                 <span className="sr-only">Open menu</span>
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-48 rounded-lg shadow-lg border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900">
               <DropdownMenuItem onClick={handleEdit} className="cursor-pointer py-2.5">
-                <Edit className="mr-2 h-4 w-4 text-gray-600 dark:text-gray-400" />
+                <Edit className="mr-2 h-4 w-4 text-gray-600 dark:text-gray-400" aria-hidden="true" />
                 <span className="text-sm font-medium">Edit</span>
               </DropdownMenuItem>
               <DropdownMenuItem onClick={handleArchive} className="cursor-pointer py-2.5">
-                <Archive className="mr-2 h-4 w-4 text-gray-600 dark:text-gray-400" />
+                <Archive className="mr-2 h-4 w-4 text-gray-600 dark:text-gray-400" aria-hidden="true" />
                 <span className="text-sm font-medium">Archive</span>
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem onClick={handleDelete} className="cursor-pointer py-2.5 text-red-600 dark:text-red-400 focus:text-red-600 dark:focus:text-red-400 focus:bg-red-50 dark:focus:bg-red-950/30">
-                <Trash2 className="mr-2 h-4 w-4" />
+                <Trash2 className="mr-2 h-4 w-4" aria-hidden="true" />
                 <span className="text-sm font-medium">Delete</span>
               </DropdownMenuItem>
             </DropdownMenuContent>
@@ -114,15 +124,15 @@ export function WorldCard({ world }: WorldCardProps) {
         {/* Footer */}
         <div className="flex items-center gap-4 text-sm text-gray-500 dark:text-gray-400 pt-4 border-t border-gray-100 dark:border-gray-800">
           <div className="flex items-center gap-1.5">
-            <Globe className="h-4 w-4" strokeWidth={2} />
+            <Globe className="h-4 w-4" strokeWidth={2} aria-hidden="true" />
             <span className="font-medium">0 entities</span>
           </div>
           <div className="flex items-center gap-1.5">
-            <Clock className="h-4 w-4" strokeWidth={2} />
+            <Clock className="h-4 w-4" strokeWidth={2} aria-hidden="true" />
             <span>{formatDistanceToNow(new Date(world.updatedAt), { addSuffix: true })}</span>
           </div>
         </div>
-      </div>
+      </article>
 
       <EditWorldDialog
         world={world}

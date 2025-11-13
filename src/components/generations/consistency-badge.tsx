@@ -46,8 +46,12 @@ export default function ConsistencyBadge({
   const Icon = config.icon;
 
   const badge = (
-    <Badge variant="outline" className={cn("gap-1.5", config.color)}>
-      {showIcon && <Icon className="h-3 w-3" />}
+    <Badge 
+      variant="outline" 
+      className={cn("gap-1.5", config.color)}
+      aria-label={`Consistency score: ${score}%, ${config.label}`}
+    >
+      {showIcon && <Icon className="h-3 w-3" aria-hidden="true" />}
       <span>{score}%</span>
     </Badge>
   );
