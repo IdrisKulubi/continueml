@@ -4,6 +4,7 @@ import bundleAnalyzer from "@next/bundle-analyzer";
 const nextConfig: NextConfig = {
   // Dynamic app with authentication and database - cannot use static export
   // Will deploy to Vercel or similar platform that supports SSR
+  turbopack: {},
   images: {
     remotePatterns: [
       {

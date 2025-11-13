@@ -5,12 +5,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { DotPattern } from "@/components/ui/dot-pattern";
 import { Plus, Globe } from "lucide-react";
 import { WorldCard } from "@/components/worlds/world-card";
-import { lazyLoadDialog } from "@/lib/utils/lazy-load";
-
-// Lazy load dialog for better performance
-const CreateWorldDialog = lazyLoadDialog(
-  () => import("@/components/worlds/create-world-dialog").then((mod) => ({ default: mod.CreateWorldDialog }))
-);
+import { CreateWorldDialog } from "@/components/worlds/create-world-dialog";
 
 async function WorldsList() {
   const result = await getWorldsAction(false);

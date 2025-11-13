@@ -1,6 +1,6 @@
 import db from "../../../db/drizzle";
 import { worlds, entities, generations, entityImages } from "../../../db/schema";
-import { eq, and, desc, sql } from "drizzle-orm";
+import { eq, and, desc, sql, inArray } from "drizzle-orm";
 import type {
   World,
   CreateWorldInput,
@@ -8,6 +8,9 @@ import type {
   WorldStats,
   EntityType,
 } from "@/types";
+
+type EntityRecord = typeof entities.$inferSelect;
+type EntityImageRecord = typeof entityImages.$inferSelect;
 
 /**
  * WorldService handles all business logic for world management
@@ -194,7 +197,12 @@ export class WorldService {
       .limit(10);
 
     // Optimize: Fetch all primary images in a single query to avoid N+1 problem
-    let recentEntities;
+    let recentEntities: (EntityRecord & {
+      tags: string[];
+      metadata: Record<string, unknown>;
+      primaryImage?: EntityImageRecord | undefined;
+    })[] = [];
+
     if (recentEntitiesRaw.length > 0) {
       const entityIds = recentEntitiesRaw.map((e) => e.id);
       const primaryImages = await db
@@ -202,7 +210,7 @@ export class WorldService {
         .from(entityImages)
         .where(
           and(
-            sql`${entityImages.entityId} = ANY(${entityIds})`,
+            inArray(entityImages.entityId, entityIds),
             eq(entityImages.isPrimary, true)
           )
         );
@@ -211,15 +219,12 @@ export class WorldService {
       const imageMap = new Map(
         primaryImages.map((img) => [img.entityId, img])
       );
-
       recentEntities = recentEntitiesRaw.map((entity) => ({
         ...entity,
         tags: entity.tags || [],
         metadata: (entity.metadata as Record<string, unknown>) || {},
         primaryImage: imageMap.get(entity.id),
       }));
-    } else {
-      recentEntities = [];
     }
 
     // Get recent generations (last 5)
