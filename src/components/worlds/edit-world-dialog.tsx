@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition, useEffect } from "react";
+import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import {
   Dialog,
@@ -32,10 +32,16 @@ export function EditWorldDialog({ world, open, onOpenChange }: EditWorldDialogPr
   const [error, setError] = useState<string | null>(null);
   const [isArchived, setIsArchived] = useState(world.isArchived);
 
-  useEffect(() => {
-    setIsArchived(world.isArchived);
-    setError(null);
-  }, [world, open]);
+  const handleDialogOpenChange = (nextOpen: boolean) => {
+    if (nextOpen) {
+      setIsArchived(world.isArchived);
+      setError(null);
+    } else {
+      setError(null);
+    }
+
+    onOpenChange(nextOpen);
+  };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -59,12 +65,12 @@ export function EditWorldDialog({ world, open, onOpenChange }: EditWorldDialogPr
   };
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+  <Dialog open={open} onOpenChange={handleDialogOpenChange}>
       <DialogContent className="sm:max-w-[540px] rounded-2xl bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-800">
         <form onSubmit={handleSubmit}>
           <DialogHeader className="space-y-3">
             <div className="flex items-center gap-2">
-              <div className="p-2 bg-gradient-to-br from-indigo-100 to-purple-100 dark:from-indigo-900/40 dark:to-purple-900/40 rounded-lg">
+              <div className="p-2 bg-linear-to-br from-indigo-100 to-purple-100 dark:from-indigo-900/40 dark:to-purple-900/40 rounded-lg">
                 <Edit3 className="h-5 w-5 text-indigo-600 dark:text-indigo-400" />
               </div>
               <DialogTitle className="text-2xl font-bold text-gray-900 dark:text-gray-100">Edit World</DialogTitle>

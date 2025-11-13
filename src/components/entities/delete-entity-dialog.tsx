@@ -26,7 +26,6 @@ interface DeleteEntityDialogProps {
 
 export function DeleteEntityDialog({
   entity,
-  worldId,
   open,
   onOpenChange,
 }: DeleteEntityDialogProps) {

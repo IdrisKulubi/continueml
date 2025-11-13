@@ -23,6 +23,7 @@ import {
 } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import type { EntityType } from "@/types";
+import type { LucideIcon } from "lucide-react";
 
 interface PageProps {
   params: Promise<{ worldId: string; entityId: string }>;
@@ -30,7 +31,7 @@ interface PageProps {
 
 const entityTypeConfig: Record<
   EntityType,
-  { icon: any; color: string; label: string }
+  { icon: LucideIcon; color: string; label: string }
 > = {
   character: {
     icon: User,

@@ -178,6 +178,8 @@ export interface EntityFilters {
   search?: string;
   branchId?: string | null;
   isArchived?: boolean;
+  limit?: number; // Pagination: number of items per page (default: 50)
+  offset?: number; // Pagination: number of items to skip (default: 0)
 }
 
 export interface CreateGenerationInput {

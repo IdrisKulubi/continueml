@@ -58,7 +58,7 @@ export function DeleteBranchDialog({
       <AlertDialogContent className="bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-700">
         <AlertDialogHeader>
           <AlertDialogTitle className="text-gray-900 dark:text-gray-100">
-            Delete Branch "{branch.name}"?
+            Delete Branch &quot;{branch.name}&quot;?
           </AlertDialogTitle>
           <AlertDialogDescription className="text-gray-600 dark:text-gray-400">
             This action cannot be undone. This will permanently delete the branch

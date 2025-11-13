@@ -1,10 +1,9 @@
 import db from "../../../db/drizzle";
-import { generations, entities } from "../../../db/schema";
-import { eq, and, desc, inArray, sql } from "drizzle-orm";
+import { generations } from "../../../db/schema";
+import { eq, and, desc,  sql } from "drizzle-orm";
 import type {
   Generation,
   CreateGenerationInput,
-  UpdateGenerationInput,
   GenerationFilters,
   Entity,
 } from "@/types";
@@ -21,7 +20,6 @@ export class GenerationService {
    */
   private detectEntityNames(prompt: string, entities: Entity[]): string[] {
     const detectedNames: string[] = [];
-    const lowerPrompt = prompt.toLowerCase();
 
     for (const entity of entities) {
       const lowerName = entity.name.toLowerCase();
@@ -85,7 +83,7 @@ export class GenerationService {
         isArchived: false,
       });
       entitiesToUse = entitiesWithImages.map((e) => {
-        const { primaryImage, ...entity } = e;
+        const {  ...entity } = e;
         return entity;
       });
     }

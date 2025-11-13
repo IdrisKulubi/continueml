@@ -13,7 +13,7 @@ interface EntityImageGalleryProps {
   worldId: string;
 }
 
-export function EntityImageGallery({ images, entityId, worldId }: EntityImageGalleryProps) {
+export function EntityImageGallery({ images}: EntityImageGalleryProps) {
   const [selectedImage, setSelectedImage] = useState<EntityImage | null>(null);
 
   if (images.length === 0) {

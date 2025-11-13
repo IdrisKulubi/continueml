@@ -40,13 +40,13 @@ export class PDFService {
     // Add statistics page if provided
     if (stats) {
       doc.addPage();
-      this.addStatisticsPage(doc, stats, margin, contentWidth);
+  this.addStatisticsPage(doc, stats, margin);
     }
 
     // Add entity pages
     for (let i = 0; i < entities.length; i++) {
       doc.addPage();
-      await this.addEntityPage(doc, entities[i], i + 1, margin, contentWidth, pageWidth);
+  await this.addEntityPage(doc, entities[i], i + 1, margin, contentWidth);
     }
 
     // Add footer to all pages
@@ -161,8 +161,7 @@ export class PDFService {
   private addStatisticsPage(
     doc: jsPDF,
     stats: { totalEntities: number; entityBreakdown: Record<string, number> },
-    margin: number,
-    contentWidth: number
+    margin: number
   ): void {
     doc.setFontSize(20);
     doc.setFont("helvetica", "bold");
@@ -203,8 +202,7 @@ export class PDFService {
     entity: Entity & { images: EntityImage[] },
     entityNumber: number,
     margin: number,
-    contentWidth: number,
-    pageWidth: number
+    contentWidth: number
   ): Promise<void> {
     let yPos = margin;
 

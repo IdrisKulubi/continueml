@@ -193,28 +193,34 @@ export class WorldService {
       .orderBy(desc(entities.updatedAt))
       .limit(10);
 
-    // Fetch primary images for recent entities
-    const recentEntities = await Promise.all(
-      recentEntitiesRaw.map(async (entity) => {
-        const [primaryImage] = await db
-          .select()
-          .from(entityImages)
-          .where(
-            and(
-              eq(entityImages.entityId, entity.id),
-              eq(entityImages.isPrimary, true)
-            )
+    // Optimize: Fetch all primary images in a single query to avoid N+1 problem
+    let recentEntities;
+    if (recentEntitiesRaw.length > 0) {
+      const entityIds = recentEntitiesRaw.map((e) => e.id);
+      const primaryImages = await db
+        .select()
+        .from(entityImages)
+        .where(
+          and(
+            sql`${entityImages.entityId} = ANY(${entityIds})`,
+            eq(entityImages.isPrimary, true)
           )
-          .limit(1);
+        );
 
-        return {
-          ...entity,
-          tags: entity.tags || [],
-          metadata: (entity.metadata as Record<string, unknown>) || {},
-          primaryImage: primaryImage || undefined,
-        };
-      })
-    );
+      // Create a map for O(1) lookup
+      const imageMap = new Map(
+        primaryImages.map((img) => [img.entityId, img])
+      );
+
+      recentEntities = recentEntitiesRaw.map((entity) => ({
+        ...entity,
+        tags: entity.tags || [],
+        metadata: (entity.metadata as Record<string, unknown>) || {},
+        primaryImage: imageMap.get(entity.id),
+      }));
+    } else {
+      recentEntities = [];
+    }
 
     // Get recent generations (last 5)
     const recentGenerationsRaw = await db

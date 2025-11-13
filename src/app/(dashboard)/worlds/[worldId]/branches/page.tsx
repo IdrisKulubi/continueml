@@ -6,8 +6,7 @@ import { worldService } from "@/lib/worlds/world-service";
 import { getBranchesAction } from "@/app/actions/branches";
 import { BranchCard } from "@/components/branches/branch-card";
 import { Button } from "@/components/ui/button";
-import { GitBranch, Plus, ArrowLeft } from "lucide-react";
-import { CreateBranchDialog } from "@/components/branches/create-branch-dialog";
+import { GitBranch, ArrowLeft } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 
 interface BranchesPageProps {

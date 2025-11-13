@@ -45,11 +45,14 @@ export class EntityService {
 
   /**
    * Get entities with filtering (type, tags, search) including primary images
+   * Supports pagination with limit and offset
    */
   async getEntities(
     worldId: string,
     filters: EntityFilters = {}
   ): Promise<(Entity & { primaryImage?: EntityImage })[]> {
+    const limit = filters.limit || 50; // Default limit of 50 entities per page
+    const offset = filters.offset || 0;
     const conditions = [eq(entities.worldId, worldId)];
 
     // Filter by archived status (default: exclude archived)
@@ -96,30 +99,38 @@ export class EntityService {
       .select()
       .from(entities)
       .where(conditions.length > 0 ? and(...conditions) : undefined)
-      .orderBy(desc(entities.updatedAt));
+      .orderBy(desc(entities.updatedAt))
+      .limit(limit)
+      .offset(offset);
 
-    // Fetch primary images for all entities
-    const entitiesWithImages = await Promise.all(
-      results.map(async (entity) => {
-        const [primaryImage] = await db
-          .select()
-          .from(entityImages)
-          .where(
-            and(
-              eq(entityImages.entityId, entity.id),
-              eq(entityImages.isPrimary, true)
-            )
-          )
-          .limit(1);
+    // Optimize: Fetch all primary images in a single query to avoid N+1 problem
+    if (results.length === 0) {
+      return [];
+    }
 
-        return {
-          ...entity,
-          tags: entity.tags || [],
-          metadata: (entity.metadata as Record<string, unknown>) || {},
-          primaryImage: primaryImage || undefined,
-        };
-      })
+    const entityIds = results.map((e) => e.id);
+    const primaryImages = await db
+      .select()
+      .from(entityImages)
+      .where(
+        and(
+          inArray(entityImages.entityId, entityIds),
+          eq(entityImages.isPrimary, true)
+        )
+      );
+
+    // Create a map for O(1) lookup
+    const imageMap = new Map(
+      primaryImages.map((img) => [img.entityId, img])
     );
+
+    // Combine entities with their primary images
+    const entitiesWithImages = results.map((entity) => ({
+      ...entity,
+      tags: entity.tags || [],
+      metadata: (entity.metadata as Record<string, unknown>) || {},
+      primaryImage: imageMap.get(entity.id),
+    }));
 
     return entitiesWithImages;
   }

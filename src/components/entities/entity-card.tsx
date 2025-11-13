@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import { Entity } from "@/types";
+import { Entity, EntityImage } from "@/types";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -30,8 +30,10 @@ import { DeleteEntityDialog } from "./delete-entity-dialog";
 import { duplicateEntityAction } from "@/app/actions/entities";
 import { toast } from "sonner";
 
+type EntityWithPrimaryImage = Entity & { primaryImage?: EntityImage | null };
+
 interface EntityCardProps {
-  entity: Entity & { primaryImage?: any };
+  entity: EntityWithPrimaryImage;
   worldId: string;
 }
 

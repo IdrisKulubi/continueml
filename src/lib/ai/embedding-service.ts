@@ -1,5 +1,6 @@
 import OpenAI from "openai";
 import Replicate from "replicate";
+import { embeddingCache } from "@/lib/cache/embedding-cache";
 
 /**
  * Retry configuration for API calls
@@ -293,12 +294,23 @@ export class EmbeddingService {
 
   /**
    * Generate text embedding using OpenAI's text-embedding-ada-002 model
+   * Uses in-memory cache to avoid redundant API calls
    * @param text - Text to generate embedding for
    * @returns 1536-dimensional embedding vector
    */
   async generateTextEmbedding(text: string): Promise<number[]> {
     if (!text || text.trim().length === 0) {
       throw new Error("Text cannot be empty");
+    }
+
+    // Create cache key from text hash
+    const cacheKey = `text:${this.hashString(text)}`;
+
+    // Check cache first
+    const cached = embeddingCache.get(cacheKey);
+    if (cached) {
+      console.log("Text embedding cache hit");
+      return cached;
     }
 
     return this.withRetry(async () => {
@@ -312,7 +324,12 @@ export class EmbeddingService {
           throw new Error("No embedding returned from OpenAI API");
         }
 
-        return response.data[0].embedding;
+        const embedding = response.data[0].embedding;
+
+        // Cache the result
+        embeddingCache.set(cacheKey, embedding);
+
+        return embedding;
       } catch (error: unknown) {
         // Handle rate limit errors specifically
         const err = error as { status?: number; headers?: Record<string, string> };
@@ -328,6 +345,21 @@ export class EmbeddingService {
         throw error;
       }
     }, "Text embedding generation");
+  }
+
+  /**
+   * Simple string hash function for cache keys
+   * @param str - String to hash
+   * @returns Hash string
+   */
+  private hashString(str: string): string {
+    let hash = 0;
+    for (let i = 0; i < str.length; i++) {
+      const char = str.charCodeAt(i);
+      hash = (hash << 5) - hash + char;
+      hash = hash & hash; // Convert to 32bit integer
+    }
+    return hash.toString(36);
   }
 
   /**

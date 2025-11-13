@@ -3,7 +3,7 @@ import { entities, entityImages, worlds } from "../../../db/schema";
 import { eq, and, inArray } from "drizzle-orm";
 import { pdfService } from "./pdf-service";
 import { storageService } from "../storage/storage-service";
-import type { World, Entity, EntityImage } from "@/types";
+import type { Entity, EntityImage } from "@/types";
 
 /**
  * ExportService handles World Bible export functionality

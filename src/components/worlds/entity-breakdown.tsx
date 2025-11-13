@@ -84,6 +84,7 @@ export function EntityBreakdown({ breakdown, worldId }: EntityBreakdownProps) {
 
       <div className="space-y-3">
         {(Object.entries(breakdown) as [EntityType, number][])
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
           .filter(([_, count]) => count > 0)
           .sort(([, a], [, b]) => b - a)
           .map(([type, count]) => {

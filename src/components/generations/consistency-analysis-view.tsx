@@ -1,10 +1,10 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
@@ -211,10 +211,13 @@ export default function ConsistencyAnalysisView({
                 <Badge variant="outline">Result</Badge>
               </div>
               <div className="relative aspect-video rounded-lg overflow-hidden bg-muted border">
-                <img
+                <Image
                   src={generatedContentUrl}
                   alt="Generated content being analyzed for consistency with entity references"
-                  className="object-cover w-full h-full"
+                  fill
+                  className="object-cover"
+                  sizes="(max-width: 768px) 100vw, 50vw"
+                  loading="lazy"
                 />
               </div>
             </div>
@@ -232,10 +235,13 @@ export default function ConsistencyAnalysisView({
                     <div key={entity.id} className="space-y-1">
                       {primaryImage && (
                         <div className="relative aspect-square rounded-md overflow-hidden bg-muted border">
-                          <img
+                          <Image
                             src={primaryImage.url}
                             alt={`Reference image for ${entity.name} entity used in consistency comparison`}
-                            className="object-cover w-full h-full"
+                            fill
+                            className="object-cover"
+                            sizes="(max-width: 768px) 50vw, 25vw"
+                            loading="lazy"
                           />
                         </div>
                       )}

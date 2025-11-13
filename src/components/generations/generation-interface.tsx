@@ -8,7 +8,6 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { Separator } from "@/components/ui/separator";
 import { Sparkles, Loader2, Copy, Check } from "lucide-react";
 import { toast } from "sonner";
 import type { Entity, EntityImage, GenerationTool } from "@/types";
@@ -53,7 +52,6 @@ export default function GenerationInterface({
   const detectedEntities = useMemo(() => {
     if (!prompt.trim()) return [];
 
-    const lowerPrompt = prompt.toLowerCase();
     return entities.filter((entity) => {
       const lowerName = entity.name.toLowerCase();
       const regex = new RegExp(`\\b${lowerName}\\b`, "i");
@@ -151,6 +149,7 @@ export default function GenerationInterface({
       toast.success("Enhanced prompt copied to clipboard");
       setTimeout(() => setIsCopied(false), 2000);
     } catch (error) {
+      console.error("Error copying to clipboard:", error);
       toast.error("Failed to copy to clipboard");
     }
   };

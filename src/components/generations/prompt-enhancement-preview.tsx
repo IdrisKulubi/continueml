@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import type { Entity, EntityImage } from "@/types";
+import Image from "next/image";
 
 interface EntityWithImage extends Entity {
   primaryImage: EntityImage | null;
@@ -141,7 +142,7 @@ export default function PromptEnhancementPreview({
               >
                 <div className="flex items-start gap-3">
                   {entity.primaryImage && (
-                    <img
+                    <Image
                       src={entity.primaryImage.url}
                       alt={`${entity.name} ${entity.type} entity thumbnail`}
                       className="w-16 h-16 rounded object-cover shrink-0"

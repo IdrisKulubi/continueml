@@ -220,7 +220,7 @@ export function ExportWorldDialog({ worldId, worldName }: ExportWorldDialogProps
           <DialogTitle>Export World Bible</DialogTitle>
           <DialogDescription>
             Generate a comprehensive PDF document containing entities, images, and
-            descriptions from "{worldName}".
+            descriptions from &quot;{worldName}&quot;.
           </DialogDescription>
         </DialogHeader>
 

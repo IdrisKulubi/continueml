@@ -13,7 +13,7 @@ interface EntitiesPageClientProps {
  * Client wrapper for entities page that handles branch context
  * Refreshes the page when branch changes to reload entities
  */
-export function EntitiesPageClient({ worldId, children }: EntitiesPageClientProps) {
+export function EntitiesPageClient({  children }: EntitiesPageClientProps) {
   const router = useRouter();
   const { currentBranch } = useBranchStore();
 

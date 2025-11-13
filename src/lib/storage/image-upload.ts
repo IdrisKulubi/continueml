@@ -1,3 +1,4 @@
+import sharp from "sharp";
 import { storageService } from "./storage-service";
 import type { ImageMetadata } from "@/types";
 
@@ -17,6 +18,12 @@ const IMAGE_CONFIG = {
   MIN_HEIGHT: 100,
   MAX_WIDTH: 4096,
   MAX_HEIGHT: 4096,
+  // Compression settings
+  COMPRESSION: {
+    QUALITY: 85, // JPEG/WebP quality (0-100)
+    MAX_DIMENSION: 2048, // Max width/height for compression
+    WEBP_QUALITY: 85, // WebP quality
+  },
 };
 
 /**
@@ -108,7 +115,95 @@ export function generateImageStorageKey(
 }
 
 /**
- * Upload entity image with validation
+ * Compress and optimize image using sharp
+ * Reduces file size while maintaining quality
+ */
+export async function compressImage(
+  buffer: Buffer,
+  mimeType: string
+): Promise<{ buffer: Buffer; width: number; height: number; mimeType: string }> {
+  try {
+    const image = sharp(buffer);
+    const imageMetadata = await image.metadata();
+
+    // Get original dimensions
+    const originalWidth = imageMetadata.width || 0;
+    const originalHeight = imageMetadata.height || 0;
+
+    // Calculate new dimensions if image is too large
+    let width = originalWidth;
+    let height = originalHeight;
+    const maxDimension = IMAGE_CONFIG.COMPRESSION.MAX_DIMENSION;
+
+    if (width > maxDimension || height > maxDimension) {
+      if (width > height) {
+        height = Math.round((height * maxDimension) / width);
+        width = maxDimension;
+      } else {
+        width = Math.round((width * maxDimension) / height);
+        height = maxDimension;
+      }
+    }
+
+    // Resize if needed
+    let processedImage = image;
+    if (width !== originalWidth || height !== originalHeight) {
+      processedImage = image.resize(width, height, {
+        fit: "inside",
+        withoutEnlargement: true,
+      });
+    }
+
+    // Compress based on format
+    let compressedBuffer: Buffer;
+    let outputMimeType = mimeType;
+
+    if (mimeType === "image/png") {
+      // Convert PNG to WebP for better compression
+      compressedBuffer = await processedImage
+        .webp({ quality: IMAGE_CONFIG.COMPRESSION.WEBP_QUALITY })
+        .toBuffer();
+      outputMimeType = "image/webp";
+    } else if (mimeType === "image/jpeg" || mimeType === "image/jpg") {
+      compressedBuffer = await processedImage
+        .jpeg({ quality: IMAGE_CONFIG.COMPRESSION.QUALITY, progressive: true })
+        .toBuffer();
+    } else if (mimeType === "image/webp") {
+      compressedBuffer = await processedImage
+        .webp({ quality: IMAGE_CONFIG.COMPRESSION.WEBP_QUALITY })
+        .toBuffer();
+    } else if (mimeType === "image/gif") {
+      // Keep GIFs as-is (animated GIFs need special handling)
+      compressedBuffer = buffer;
+    } else {
+      // Default to JPEG for unknown formats
+      compressedBuffer = await processedImage
+        .jpeg({ quality: IMAGE_CONFIG.COMPRESSION.QUALITY })
+        .toBuffer();
+      outputMimeType = "image/jpeg";
+    }
+
+    return {
+      buffer: compressedBuffer,
+      width,
+      height,
+      mimeType: outputMimeType,
+    };
+  } catch (error) {
+    console.error("Error compressing image:", error);
+    // If compression fails, return original
+    const imageMetadata = await sharp(buffer).metadata();
+    return {
+      buffer,
+      width: imageMetadata.width || 0,
+      height: imageMetadata.height || 0,
+      mimeType,
+    };
+  }
+}
+
+/**
+ * Upload entity image with validation and compression
  * This is a server-side function that handles the complete upload process
  */
 export async function uploadEntityImage(
@@ -126,29 +221,34 @@ export async function uploadEntityImage(
   // Validate dimensions
   validateImageDimensions(metadata.width, metadata.height);
 
-  // Generate storage key
+  // Compress and optimize image
+  const compressed = await compressImage(file, metadata.mimeType);
+
+  // Generate storage key with correct extension
+  const extension = compressed.mimeType.split("/")[1];
+  const baseFilename = metadata.filename.replace(/\.[^/.]+$/, "");
   const storageKey = generateImageStorageKey(
     metadata.userId,
     metadata.worldId,
     metadata.entityId,
-    metadata.filename
+    `${baseFilename}.${extension}`
   );
 
   // Upload to R2
   const { url, key } = await storageService.uploadImage(
-    file,
+    compressed.buffer,
     storageKey,
-    metadata.mimeType
+    compressed.mimeType
   );
 
   return {
     url,
     storageKey: key,
     metadata: {
-      width: metadata.width,
-      height: metadata.height,
-      fileSize: file.length,
-      mimeType: metadata.mimeType,
+      width: compressed.width,
+      height: compressed.height,
+      fileSize: compressed.buffer.length,
+      mimeType: compressed.mimeType,
     },
   };
 }

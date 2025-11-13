@@ -7,6 +7,31 @@ import { Skeleton } from "@/components/ui/skeleton";
 import GenerationHistory from "@/components/generations/generation-history";
 import GenerationFilters from "@/components/generations/generation-filters";
 import { entityService } from "@/lib/entities/entity-service";
+import type {
+  GenerationFilters as GenerationFiltersInput,
+  GenerationStatus,
+  GenerationTool,
+} from "@/types";
+
+const generationTools: GenerationTool[] = [
+  "runway",
+  "midjourney",
+  "stable_diffusion",
+  "other",
+];
+
+const generationStatuses: GenerationStatus[] = [
+  "queued",
+  "processing",
+  "completed",
+  "failed",
+];
+
+const isValidGenerationTool = (value: string): value is GenerationTool =>
+  generationTools.includes(value as GenerationTool);
+
+const isValidGenerationStatus = (value: string): value is GenerationStatus =>
+  generationStatuses.includes(value as GenerationStatus);
 
 interface HistoryPageProps {
   params: Promise<{
@@ -62,7 +87,7 @@ async function HistoryContent({
   const limit = 50;
   const offset = (page - 1) * limit;
 
-  const filters: any = {
+  const filters: GenerationFiltersInput = {
     worldId,
     limit,
     offset,
@@ -72,11 +97,11 @@ async function HistoryContent({
     filters.entityId = searchParams.entityId;
   }
 
-  if (searchParams.tool) {
+  if (searchParams.tool && isValidGenerationTool(searchParams.tool)) {
     filters.tool = searchParams.tool;
   }
 
-  if (searchParams.status) {
+  if (searchParams.status && isValidGenerationStatus(searchParams.status)) {
     filters.status = searchParams.status;
   }
 

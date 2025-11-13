@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -24,7 +25,6 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { MoreVertical, RefreshCw, Trash2, ExternalLink, Clock, Sparkles } from "lucide-react";
 import { toast } from "sonner";
-import { cn } from "@/lib/utils";
 import type { Generation } from "@/types";
 import { retryGenerationAction, deleteGenerationAction } from "@/app/actions/generations";
 import ConsistencyBadge from "./consistency-badge";
@@ -189,10 +189,13 @@ export default function GenerationCard({ generation, worldId }: GenerationCardPr
           {/* Result Thumbnail */}
           {generation.resultUrl && generation.status === "completed" && (
             <div className="relative aspect-video rounded-md overflow-hidden bg-muted">
-              <img
+              <Image
                 src={generation.resultUrl}
                 alt={`Generated content from prompt: ${generation.originalPrompt.slice(0, 100)}${generation.originalPrompt.length > 100 ? '...' : ''}`}
-                className="object-cover w-full h-full"
+                fill
+                className="object-cover"
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                loading="lazy"
               />
             </div>
           )}

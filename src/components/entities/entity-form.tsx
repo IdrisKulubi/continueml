@@ -2,7 +2,7 @@
 
 import { useState, useRef } from "react";
 import { useRouter } from "next/navigation";
-import { useFormState } from "react-dom";
+import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -18,7 +18,7 @@ import { Badge } from "@/components/ui/badge";
 import { createEntityAction } from "@/app/actions/entities";
 import { useBranchStore } from "@/lib/stores/branch-store";
 import { EntityType } from "@/types";
-import { Upload, X, Image as ImageIcon, Loader2 } from "lucide-react";
+import { Upload, X, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 
 interface EntityFormProps {
@@ -77,18 +77,26 @@ export function EntityForm({ worldId, initialData, mode = "create" }: EntityForm
     }
   };
 
-  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = Array.from(e.target.files || []);
+  const processFiles = (fileList: FileList | null) => {
+    const selectedFiles = Array.from(fileList ?? []);
+    if (selectedFiles.length === 0) {
+      return;
+    }
 
-    // Validate file count
-    if (images.length + files.length > MAX_IMAGES) {
+    const availableSlots = MAX_IMAGES - images.length;
+    if (availableSlots <= 0) {
       toast.error(`Maximum ${MAX_IMAGES} images allowed`);
       return;
     }
 
-    // Validate each file
+    if (selectedFiles.length > availableSlots) {
+      toast.error(`You can add ${availableSlots} more image${availableSlots === 1 ? "" : "s"}.`);
+    }
+
+    const filesToEvaluate = selectedFiles.slice(0, availableSlots);
     const validFiles: File[] = [];
-    for (const file of files) {
+
+    for (const file of filesToEvaluate) {
       if (!ALLOWED_TYPES.includes(file.type)) {
         toast.error(`${file.name}: Invalid file type. Only JPEG, PNG, and WebP are allowed.`);
         continue;
@@ -102,20 +110,24 @@ export function EntityForm({ worldId, initialData, mode = "create" }: EntityForm
       validFiles.push(file);
     }
 
-    if (validFiles.length > 0) {
-      setImages([...images, ...validFiles]);
-
-      // Create previews
-      validFiles.forEach((file) => {
-        const reader = new FileReader();
-        reader.onloadend = () => {
-          setImagePreviews((prev) => [...prev, reader.result as string]);
-        };
-        reader.readAsDataURL(file);
-      });
+    if (validFiles.length === 0) {
+      return;
     }
 
-    // Reset input
+    setImages((prev) => [...prev, ...validFiles]);
+
+    validFiles.forEach((file) => {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreviews((prev) => [...prev, reader.result as string]);
+      };
+      reader.readAsDataURL(file);
+    });
+  };
+
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    processFiles(e.target.files);
+
     if (fileInputRef.current) {
       fileInputRef.current.value = "";
     }
@@ -141,7 +153,10 @@ export function EntityForm({ worldId, initialData, mode = "create" }: EntityForm
       const dataTransfer = new DataTransfer();
       files.forEach((file) => dataTransfer.items.add(file));
       input.files = dataTransfer.files;
-      handleFileSelect({ target: input } as any);
+      processFiles(dataTransfer.files);
+      input.value = "";
+    } else {
+      processFiles(e.dataTransfer.files);
     }
   };
 
@@ -338,11 +353,14 @@ export function EntityForm({ worldId, initialData, mode = "create" }: EntityForm
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 mt-4">
             {imagePreviews.map((preview, index) => (
               <div key={index} className="relative group">
-                <div className="aspect-square rounded-lg overflow-hidden bg-gray-100 dark:bg-gray-800">
-                  <img
+                <div className="relative aspect-square rounded-lg overflow-hidden bg-gray-100 dark:bg-gray-800">
+                  <Image
                     src={preview}
-                    alt={`Preview of uploaded image ${index + 1} of ${imagePreviews.length}${index === 0 ? ' (will be set as primary)' : ''}`}
-                    className="w-full h-full object-cover"
+                    alt={`Preview of uploaded image ${index + 1} of ${imagePreviews.length}${index === 0 ? " (will be set as primary)" : ""}`}
+                    fill
+                    className="object-cover"
+                    sizes="(max-width: 640px) 50vw, (max-width: 1024px) 25vw, 200px"
+                    unoptimized
                   />
                 </div>
                 <button

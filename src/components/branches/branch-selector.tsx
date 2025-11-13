@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useRouter, usePathname } from "next/navigation";
+import { useRouter} from "next/navigation";
 import { Branch } from "@/types";
 import { Button } from "@/components/ui/button";
 import {
@@ -24,7 +24,6 @@ interface BranchSelectorProps {
 
 export function BranchSelector({ worldId, branches, className }: BranchSelectorProps) {
   const router = useRouter();
-  const pathname = usePathname();
   const { currentBranch, setCurrentBranch, setBranches } = useBranchStore();
   const [showCreateDialog, setShowCreateDialog] = useState(false);
 
