@@ -11,6 +11,7 @@ import { DashboardStats } from "@/components/worlds/dashboard-stats";
 import { EntityBreakdown } from "@/components/worlds/entity-breakdown";
 import { EntityCard } from "@/components/entities/entity-card";
 import GenerationCard from "@/components/generations/generation-card";
+import { ExportWorldDialog } from "@/components/worlds/export-world-dialog";
 import { Layers, Plus, ArrowLeft, Sparkles, Clock, TrendingUp } from "lucide-react";
 
 interface PageProps {
@@ -80,7 +81,10 @@ export default async function WorldDetailPage({ params }: PageProps) {
               </p>
             )}
           </div>
-          <BranchSelector worldId={worldId} branches={branches} />
+          <div className="flex items-center gap-3">
+            <ExportWorldDialog worldId={worldId} worldName={world.name} />
+            <BranchSelector worldId={worldId} branches={branches} />
+          </div>
         </div>
         {world.tags && world.tags.length > 0 && (
           <div className="flex flex-wrap gap-2">
