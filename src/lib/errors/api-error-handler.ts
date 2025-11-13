@@ -27,7 +27,7 @@ export function handleApiError(error: unknown): NextResponse {
     const appError = new AppError(
       ErrorCode.VALIDATION_ERROR,
       "Validation failed",
-      error.errors
+      error.issues
     );
     return NextResponse.json(appError.toJSON(), {
       status: appError.statusCode,

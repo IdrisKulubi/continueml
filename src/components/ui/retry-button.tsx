@@ -1,15 +1,20 @@
 "use client";
 
-import { Button, ButtonProps } from "@/components/ui/button";
+import * as React from "react";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { RefreshCw } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { type VariantProps } from "class-variance-authority";
 
-interface RetryButtonProps extends Omit<ButtonProps, "onClick"> {
+interface RetryButtonProps
+  extends Omit<React.ComponentProps<"button">, "onClick">,
+    VariantProps<typeof buttonVariants> {
   onRetry: () => void | Promise<void>;
   isRetrying?: boolean;
   attempt?: number;
   maxAttempts?: number;
   showAttempts?: boolean;
+  asChild?: boolean;
 }
 
 /**
@@ -23,6 +28,9 @@ export function RetryButton({
   showAttempts = false,
   children,
   className,
+  variant,
+  size,
+  asChild,
   ...props
 }: RetryButtonProps) {
   const handleRetry = async () => {
@@ -39,6 +47,9 @@ export function RetryButton({
       onClick={handleRetry}
       disabled={isRetrying}
       className={cn(className)}
+      variant={variant}
+      size={size}
+      asChild={asChild}
       {...props}
     >
       <RefreshCw
