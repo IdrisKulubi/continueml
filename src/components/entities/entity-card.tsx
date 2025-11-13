@@ -38,7 +38,7 @@ interface EntityCardProps {
 const entityTypeConfig = {
   character: {
     icon: User,
-    color: "bg-blue-500",
+    color: "entity-character", // Uses CSS variable with WCAG AA compliant contrast
     textColor: "text-blue-600 dark:text-blue-400",
     bgColor: "bg-blue-50 dark:bg-blue-950/30",
     borderColor: "border-blue-200 dark:border-blue-800/50",
@@ -46,7 +46,7 @@ const entityTypeConfig = {
   },
   location: {
     icon: MapPin,
-    color: "bg-purple-500",
+    color: "entity-location", // Uses CSS variable with WCAG AA compliant contrast
     textColor: "text-purple-600 dark:text-purple-400",
     bgColor: "bg-purple-50 dark:bg-purple-950/30",
     borderColor: "border-purple-200 dark:border-purple-800/50",
@@ -54,7 +54,7 @@ const entityTypeConfig = {
   },
   object: {
     icon: Box,
-    color: "bg-orange-500",
+    color: "entity-object", // Uses CSS variable with WCAG AA compliant contrast
     textColor: "text-orange-600 dark:text-orange-400",
     bgColor: "bg-orange-50 dark:bg-orange-950/30",
     borderColor: "border-orange-200 dark:border-orange-800/50",
@@ -62,7 +62,7 @@ const entityTypeConfig = {
   },
   style: {
     icon: Palette,
-    color: "bg-pink-500",
+    color: "entity-style", // Uses CSS variable with WCAG AA compliant contrast
     textColor: "text-pink-600 dark:text-pink-400",
     bgColor: "bg-pink-50 dark:bg-pink-950/30",
     borderColor: "border-pink-200 dark:border-pink-800/50",
@@ -70,7 +70,7 @@ const entityTypeConfig = {
   },
   custom: {
     icon: Layers,
-    color: "bg-gray-500",
+    color: "entity-custom", // Uses CSS variable with WCAG AA compliant contrast
     textColor: "text-gray-600 dark:text-gray-400",
     bgColor: "bg-gray-50 dark:bg-gray-950/30",
     borderColor: "border-gray-200 dark:border-gray-800/50",
@@ -146,7 +146,7 @@ export function EntityCard({ entity, worldId }: EntityCardProps) {
           {entity.primaryImage ? (
             <Image
               src={entity.primaryImage.url}
-              alt={`${entity.name} reference image`}
+              alt={`${entity.name}, a ${config.label.toLowerCase()} entity, showing primary visual reference`}
               fill
               className="object-contain p-2"
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"

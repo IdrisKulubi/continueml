@@ -55,18 +55,18 @@ export function EntityActions({ entity, worldId }: EntityActionsProps) {
     <>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button variant="outline" size="icon">
-            <MoreVertical className="h-4 w-4" />
+          <Button variant="outline" size="icon" aria-label="More actions">
+            <MoreVertical className="h-4 w-4" aria-hidden="true" />
             <span className="sr-only">More actions</span>
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="w-48">
           <DropdownMenuItem onClick={handleDuplicate} disabled={isDuplicating}>
-            <Copy className="mr-2 h-4 w-4" />
+            <Copy className="mr-2 h-4 w-4" aria-hidden="true" />
             <span>{isDuplicating ? "Duplicating..." : "Duplicate"}</span>
           </DropdownMenuItem>
           <DropdownMenuItem onClick={handleArchive}>
-            <Archive className="mr-2 h-4 w-4" />
+            <Archive className="mr-2 h-4 w-4" aria-hidden="true" />
             <span>{entity.isArchived ? "Unarchive" : "Archive"}</span>
           </DropdownMenuItem>
           <DropdownMenuSeparator />
@@ -74,7 +74,7 @@ export function EntityActions({ entity, worldId }: EntityActionsProps) {
             onClick={() => setShowDeleteDialog(true)}
             className="text-red-600 dark:text-red-400 focus:text-red-600 dark:focus:text-red-400 focus:bg-red-50 dark:focus:bg-red-950/30"
           >
-            <Trash2 className="mr-2 h-4 w-4" />
+            <Trash2 className="mr-2 h-4 w-4" aria-hidden="true" />
             <span>Delete</span>
           </DropdownMenuItem>
         </DropdownMenuContent>

@@ -341,7 +341,7 @@ export function EntityForm({ worldId, initialData, mode = "create" }: EntityForm
                 <div className="aspect-square rounded-lg overflow-hidden bg-gray-100 dark:bg-gray-800">
                   <img
                     src={preview}
-                    alt={`Preview ${index + 1}`}
+                    alt={`Preview of uploaded image ${index + 1} of ${imagePreviews.length}${index === 0 ? ' (will be set as primary)' : ''}`}
                     className="w-full h-full object-cover"
                   />
                 </div>

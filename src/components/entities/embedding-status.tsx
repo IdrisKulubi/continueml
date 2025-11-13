@@ -59,7 +59,7 @@ export function EmbeddingStatus({
       <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-lg p-4 space-y-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <Sparkles className="h-4 w-4 text-indigo-500" />
+            <Sparkles className="h-4 w-4 text-indigo-500" aria-hidden="true" />
             <span className="text-sm font-medium text-gray-900 dark:text-gray-100">
               Status
             </span>
@@ -92,12 +92,12 @@ export function EmbeddingStatus({
             >
               {isRegenerating ? (
                 <>
-                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" aria-hidden="true" />
                   Generating...
                 </>
               ) : (
                 <>
-                  <RefreshCw className="w-4 h-4 mr-2" />
+                  <RefreshCw className="w-4 h-4 mr-2" aria-hidden="true" />
                   Generate Embeddings
                 </>
               )}

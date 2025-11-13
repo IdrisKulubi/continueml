@@ -7,7 +7,13 @@ import { Globe, Settings, Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ModeToggle } from "@/components/themes/mode-toggle";
 import { UserNav } from "@/components/layout/user-nav";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 
 export function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -75,6 +81,9 @@ export function Navbar() {
               </Button>
             </SheetTrigger>
             <SheetContent side="right" className="w-64" aria-label="Mobile navigation">
+              <SheetHeader className="sr-only">
+                <SheetTitle>Navigation menu</SheetTitle>
+              </SheetHeader>
               <nav className="flex flex-col gap-4 mt-8" aria-label="Mobile menu">
                 {renderNavLinks(handleNavigate)}
               </nav>

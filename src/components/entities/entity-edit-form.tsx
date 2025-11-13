@@ -337,7 +337,7 @@ export function EntityEditForm({ worldId, entity, images: initialImages, shouldA
                 <div className="aspect-square rounded-lg overflow-hidden bg-linear-to-br from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-900 border border-gray-200 dark:border-gray-700">
                   <Image
                     src={image.url}
-                    alt="Entity image"
+                    alt={`Reference image ${images.indexOf(image) + 1} of ${images.length}${image.isPrimary ? ' (primary)' : ''}`}
                     fill
                     className="object-contain p-2"
                     sizes="(max-width: 768px) 50vw, (max-width: 1200px) 25vw, 20vw"

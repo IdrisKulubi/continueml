@@ -42,7 +42,7 @@ export function EntityImageGallery({ images, entityId, worldId }: EntityImageGal
         >
           <Image
             src={primaryImage.url}
-            alt="Primary reference image for entity"
+            alt={`Primary reference image showing visual characteristics and appearance`}
             fill
             className="object-contain p-4"
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 60vw"
@@ -66,7 +66,7 @@ export function EntityImageGallery({ images, entityId, worldId }: EntityImageGal
               >
                 <Image
                   src={image.url}
-                  alt={`Entity reference image ${otherImages.indexOf(image) + 2}`}
+                  alt={`Additional reference image ${otherImages.indexOf(image) + 2} of ${otherImages.length + 1} showing different angle or detail`}
                   fill
                   className="object-contain p-2"
                   sizes="(max-width: 768px) 50vw, (max-width: 1200px) 25vw, 20vw"
@@ -90,7 +90,7 @@ export function EntityImageGallery({ images, entityId, worldId }: EntityImageGal
                   <div className="relative w-full bg-linear-to-br from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-900">
                     <Image
                       src={selectedImage.url}
-                      alt={`Full size ${selectedImage.isPrimary ? 'primary' : ''} reference image for entity`}
+                      alt={`Full size ${selectedImage.isPrimary ? 'primary' : 'additional'} reference image at ${selectedImage.width}×${selectedImage.height} pixels`}
                       width={selectedImage.width}
                       height={selectedImage.height}
                       className="w-full h-auto max-h-[70vh] object-contain"

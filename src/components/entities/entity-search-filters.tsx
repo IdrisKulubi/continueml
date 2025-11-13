@@ -97,28 +97,30 @@ export function EntitySearchFilters({ worldId }: EntitySearchFiltersProps) {
       <div className="flex flex-col sm:flex-row gap-3">
         {/* Search Input */}
         <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" aria-hidden="true" />
           <Input
             type="text"
             placeholder="Search entities by name or description..."
             value={searchQuery}
             onChange={(e) => handleSearchChange(e.target.value)}
             className="pl-10 pr-10"
+            aria-label="Search entities"
           />
           {searchQuery && (
             <button
               onClick={() => handleSearchChange("")}
               className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+              aria-label="Clear search"
             >
-              <X className="h-4 w-4" />
+              <X className="h-4 w-4" aria-hidden="true" />
             </button>
           )}
         </div>
 
         {/* Type Filter */}
         <Select value={selectedType} onValueChange={handleTypeChange}>
-          <SelectTrigger className="w-full sm:w-[180px]">
-            <Filter className="h-4 w-4 mr-2" />
+          <SelectTrigger className="w-full sm:w-[180px]" aria-label="Filter by entity type">
+            <Filter className="h-4 w-4 mr-2" aria-hidden="true" />
             <SelectValue placeholder="All Types" />
           </SelectTrigger>
           <SelectContent>
@@ -138,7 +140,7 @@ export function EntitySearchFilters({ worldId }: EntitySearchFiltersProps) {
             onClick={handleClearFilters}
             className="w-full sm:w-auto"
           >
-            <X className="h-4 w-4 mr-2" />
+            <X className="h-4 w-4 mr-2" aria-hidden="true" />
             Clear Filters
           </Button>
         )}
@@ -155,8 +157,9 @@ export function EntitySearchFilters({ worldId }: EntitySearchFiltersProps) {
               <button
                 onClick={() => handleSearchChange("")}
                 className="ml-1 hover:text-gray-900 dark:hover:text-gray-100"
+                aria-label="Remove search filter"
               >
-                <X className="h-3 w-3" />
+                <X className="h-3 w-3" aria-hidden="true" />
               </button>
             </Badge>
           )}
@@ -167,8 +170,9 @@ export function EntitySearchFilters({ worldId }: EntitySearchFiltersProps) {
               <button
                 onClick={() => handleTypeChange("all")}
                 className="ml-1 hover:text-gray-900 dark:hover:text-gray-100"
+                aria-label="Remove type filter"
               >
-                <X className="h-3 w-3" />
+                <X className="h-3 w-3" aria-hidden="true" />
               </button>
             </Badge>
           )}
@@ -179,8 +183,9 @@ export function EntitySearchFilters({ worldId }: EntitySearchFiltersProps) {
               <button
                 onClick={() => setSelectedTags(selectedTags.filter((t) => t !== tag))}
                 className="ml-1 hover:text-gray-900 dark:hover:text-gray-100"
+                aria-label={`Remove ${tag} tag filter`}
               >
-                <X className="h-3 w-3" />
+                <X className="h-3 w-3" aria-hidden="true" />
               </button>
             </Badge>
           ))}

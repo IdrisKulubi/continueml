@@ -143,7 +143,7 @@ export default function PromptEnhancementPreview({
                   {entity.primaryImage && (
                     <img
                       src={entity.primaryImage.url}
-                      alt={entity.name}
+                      alt={`${entity.name} ${entity.type} entity thumbnail`}
                       className="w-16 h-16 rounded object-cover shrink-0"
                     />
                   )}

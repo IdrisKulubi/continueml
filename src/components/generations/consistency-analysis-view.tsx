@@ -213,7 +213,7 @@ export default function ConsistencyAnalysisView({
               <div className="relative aspect-video rounded-lg overflow-hidden bg-muted border">
                 <img
                   src={generatedContentUrl}
-                  alt="Generated content"
+                  alt="Generated content being analyzed for consistency with entity references"
                   className="object-cover w-full h-full"
                 />
               </div>
@@ -234,7 +234,7 @@ export default function ConsistencyAnalysisView({
                         <div className="relative aspect-square rounded-md overflow-hidden bg-muted border">
                           <img
                             src={primaryImage.url}
-                            alt={entity.name}
+                            alt={`Reference image for ${entity.name} entity used in consistency comparison`}
                             className="object-cover w-full h-full"
                           />
                         </div>
